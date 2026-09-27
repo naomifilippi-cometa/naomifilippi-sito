@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard · Naomi Filippi</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#14060F">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script src="assets/config.js"></script>
+<script src="assets/guardia.js"></script>
+</head>
+<body class="app">
+<div id="root"><div class="scheletro" role="status" aria-label="Caricamento della dashboard"><div class="sk-top"></div><div class="wrap sk-corpo"><div class="sk sk-titolo"></div><div class="sk-griglia" style="grid-template-columns:repeat(4,1fr)"><div class="sk" style="height:90px"></div><div class="sk" style="height:90px"></div><div class="sk" style="height:90px"></div><div class="sk" style="height:90px"></div></div><div class="sk sk-pannello alto" style="grid-row:auto"></div></div></div></div>
+<noscript><p style="padding:24px">La dashboard richiede JavaScript attivo nel browser.</p></noscript>
+
+<script src="assets/vendor/supabase.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/ui.js"></script>
+<script>
+(function () {
+  var root = document.getElementById('root'), esc = NF.esc, main, stacca = null, clienteAperto = null, composerApi = null;
+  var filtro = { testo: '', stato: 'tutti' }, canale = null, ultimoAperto = null, primaVolta = true;
+  var demoQ = NF.live ? '' : 'demo=cliente';
+
+  async function avvia() {
+    var s = await NF.sessione();
+    if (!s) return NF.vaiAdAccedi();
+    if (!(await NF.eAdmin())) return location.replace(NF.pagina('area', demoQ)); // una cliente finisce nella sua area
+    struttura();
+    window.addEventListener('hashchange', function () { UI.transizione(instrada); });
+    await instrada();
+    setTimeout(function () { primaVolta = false; }, 1500);
+    if (stacca) stacca();
+    stacca = NF.ascolta(null, function () { aggiornaContatori(); if (location.hash.indexOf('#cliente/') === 0) apriCliente(clienteAperto, true); else instrada(); });
+  }
+
+  function struttura() {
+    root.innerHTML = UI.demoBar('Stai vedendo la dashboard come Naomi, con clienti e richieste di esempio. Prova ad aprire la scheda di Anna Rossi e a scriverle.') +
+      '<header class="app-top"><div class="wrap" style="max-width:none">' +
+      '<a class="logo" href="index.html" aria-label="Vai al sito">' + UI.LOGO + '<div style="line-height:1"><b>Naomi Filippi</b><span>dashboard</span></div></a>' +
+      '<div class="chi-sono">' + UI.avatar(NF.NAOMI) + '<span class="testo-utente">Naomi<small>amministratrice</small></span><button class="btn-mini" id="esci" type="button">Esci</button></div></div></header>' +
+      '<div class="admin-layout"><nav class="sidebar" aria-label="Sezioni della dashboard">' +
+      '<a href="#clienti" data-v="clienti">Clienti <span id="c-clienti"></span></a>' +
+      '<a href="#richieste" data-v="richieste">Richieste dal sito <span id="c-richieste"></span></a>' +
+      '<div class="sep"></div><a href="index.html">Vai al sito ↗</a>' +
+      '<small>Le clienti accedono da naomifilippi.it/accedi con Google, LinkedIn o email.</small><span class="ind" aria-hidden="true"></span></nav>' +
+      '<main class="admin-main chiaro-ui" id="main"></main></div>';
+    main = document.getElementById('main');
+    document.getElementById('esci').addEventListener('click', async function () { if (stacca) stacca(); if (canale) canale.chiudi(); await NF.esci(); NF.vaiAdAccedi('uscito=1'); });
+    addEventListener('resize', function () { muoviInd(); });
+    aggiornaContatori();
+  }
+
+  async function aggiornaContatori() {
+    var cl = await NF.clienti(), rq = await NF.richieste();
+    var daLeggere = cl.reduce(function (s, c) { return s + (c.n_da_leggere || 0); }, 0), nuove = rq.filter(function (r) { return !r.gestita; }).length;
+    var a = document.getElementById('c-clienti'), b = document.getElementById('c-richieste');
+    if (a) a.innerHTML = daLeggere ? '<span class="badge-num" title="Messaggi da leggere">' + daLeggere + '</span>' : '';
+    if (b) b.innerHTML = nuove ? '<span class="badge-num" title="Richieste nuove">' + nuove + '</span>' : '';
+  }
+
+  function segnaMenu(v) { document.querySelectorAll('.sidebar a[data-v]').forEach(function (a) { if (a.getAttribute('data-v') === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); muoviInd(); }
+  // indicatore che scivola sotto la voce attiva
+  function muoviInd() {
+    var sb = document.querySelector('.sidebar'), ind = sb && sb.querySelector('.ind'), a = sb && sb.querySelector('a[aria-current]');
+    if (!ind || !a) return;
+    sb.classList.add('con-ind');
+    ind.style.width = a.offsetWidth + 'px'; ind.style.height = a.offsetHeight + 'px';
+    ind.style.transform = 'translate(' + a.offsetLeft + 'px,' + a.offsetTop + 'px)';
+  }
+
+  function instrada() {
+    var h = location.hash || '#clienti';
+    if (h.indexOf('#cliente/') === 0) { segnaMenu('clienti'); return apriCliente(decodeURIComponent(h.slice(9))); }
+    if (h === '#richieste') { segnaMenu('richieste'); return vistaRichieste(); }
+    segnaMenu('clienti'); return vistaClienti();
+  }
+
+  // ---------------- elenco clienti ----------------
+  async function vistaClienti() {
+    clienteAperto = null;
+    var cl = await NF.clienti(), rq = await NF.richieste();
+    var attivi = cl.filter(function (c) { return c.stato === 'attivo'; }).length;
+    var daLeggere = cl.reduce(function (s, c) { return s + (c.n_da_leggere || 0); }, 0);
+    var nuovi = cl.filter(function (c) { return c.stato === 'nuovo'; }).length;
+    var rqNuove = rq.filter(function (r) { return !r.gestita; }).length;
+    main.className = 'admin-main chiaro-ui' + (primaVolta ? ' anima' : '');
+    main.innerHTML =
+      '<div class="saluto"><div style="display:grid;gap:6px"><p class="eyebrow">Dashboard</p><h1>' + UI.saluto() + ', Naomi. <span class="mano" aria-hidden="true">✦</span></h1></div></div>' +
+      '<div class="kpi"><div><b data-conta="' + attivi + '">' + attivi + '</b><span>clienti attivi</span></div>' +
+      '<div class="' + (daLeggere ? 'caldo' : '') + '"><b data-conta="' + daLeggere + '">' + daLeggere + '</b><span>messaggi da leggere</span></div>' +
+      '<div><b data-conta="' + nuovi + '">' + nuovi + '</b><span>nuovi iscritti da contattare</span></div>' +
+      '<div class="' + (rqNuove ? 'caldo' : '') + '"><b data-conta="' + rqNuove + '">' + rqNuove + '</b><span>richieste dal sito</span></div></div>' +
+      '<section class="pannello"><header><h2>Clienti</h2><span class="sotto">Ordinati per ultima attività</span></header>' +
+      '<div class="filtri"><label class="sr" for="cerca" style="position:absolute;left:-9999px">Cerca</label><input id="cerca" type="search" placeholder="Cerca per nome, email o servizio" value="' + esc(filtro.testo) + '">' +
+      '<label for="f-stato" style="position:absolute;left:-9999px">Stato</label><select id="f-stato"><option value="tutti">Tutti gli stati</option>' + NF.STATI.map(function (s) { return '<option' + (filtro.stato === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></div>' +
+      '<ul class="clienti anima-righe" id="lista"></ul></section>';
+    if (primaVolta) UI.conta(main);
+    function disegnaLista() {
+      var t = filtro.testo.toLowerCase();
+      var righe = cl.filter(function (c) {
+        return (filtro.stato === 'tutti' || c.stato === filtro.stato) &&
+          (!t || [c.nome, c.email, c.servizio].join(' ').toLowerCase().indexOf(t) >= 0);
+      }).sort(function (a, b) { return (b.n_da_leggere > 0) - (a.n_da_leggere > 0) || String(b.ultima_attivita).localeCompare(String(a.ultima_attivita)); });
+      document.getElementById('lista').innerHTML = righe.length ? righe.map(function (c) {
+        var mini = NF.TAPPE.map(function (_, i) { return '<i class="' + (i < c.passo ? 'on' : '') + '"></i>'; }).join('');
+        return '<li><a class="cliente-riga" href="#cliente/' + encodeURIComponent(c.id) + '">' + UI.avatar(c) +
+          '<div style="min-width:0"><div class="nome">' + esc(c.nome || c.email) + '</div><div class="sub">' + esc(c.email || '') + '</div></div>' +
+          '<div class="centro" style="min-width:0"><div class="sub">' + esc(c.servizio || 'Servizio da definire') + (c.fase ? ' · ' + esc(NF.FASI[c.fase]) : '') + '</div><div class="mini-percorso" aria-label="Tappa ' + c.passo + ' di 4">' + mini + '</div></div>' +
+          '<div class="dx">' + (c.n_da_leggere ? '<span class="badge-num" title="Messaggi da leggere">' + c.n_da_leggere + '</span>' : '') +
+          '<span class="pill ' + esc(String(c.stato).replace(' ', '-')) + '">' + esc(c.stato) + '</span><span class="sub">' + esc(NF.quando(c.ultima_attivita)) + '</span></div></a></li>';
+      }).join('') : '<li class="vuoto">Nessun cliente trovato. Le clienti compaiono qui al primo accesso all\'area riservata.</li>';
+    }
+    // la foto del cliente appena chiuso "torna" nella sua riga
+    if (ultimoAperto) { var av = document.querySelector('.cliente-riga[href="#cliente/' + encodeURIComponent(ultimoAperto) + '"] .avatar'); if (av) av.style.viewTransitionName = 'av-cliente'; }
+    document.getElementById('lista').addEventListener('click', function (e) {
+      var r = e.target.closest('.cliente-riga'); if (!r) return;
+      document.querySelectorAll('.cliente-riga .avatar').forEach(function (x) { x.style.viewTransitionName = ''; });
+      var av = r.querySelector('.avatar'); if (av) av.style.viewTransitionName = 'av-cliente';
+    });
+    document.getElementById('cerca').addEventListener('input', function (e) { filtro.testo = e.target.value; disegnaLista(); });
+    document.getElementById('f-stato').addEventListener('change', function (e) { filtro.stato = e.target.value; disegnaLista(); });
+    disegnaLista();
+  }
+
+  // ---------------- scheda cliente ----------------
+  async function apriCliente(id, soloAggiorna) {
+    var c = await NF.cliente(id);
+    if (!c) { main.innerHTML = '<a class="torna-lista" href="#clienti">← Tutti i clienti</a><div class="vuoto">Cliente non trovato.</div>'; return; }
+    if (!soloAggiorna || clienteAperto !== id) {
+      clienteAperto = id; ultimoAperto = id;
+      main.className = 'admin-main chiaro-ui';
+      if (canale) canale.chiudi();
+      canale = NF.canaleScrittura(id, function (daNaomi) { if (!daNaomi) UI.scrive(document.getElementById('chat'), (c.nome || 'Il cliente').split(' ')[0]); });
+      var wa = NF.waLink(c.telefono, 'Ciao ' + (c.nome || '').split(' ')[0] + ', sono Naomi.');
+      main.innerHTML = '<a class="torna-lista" href="#clienti">← Tutti i clienti</a>' +
+        '<div class="scheda-top">' + UI.avatar(c, true).replace('<span class="avatar grande"', '<span class="avatar grande" style="view-transition-name:av-cliente"') + '<div style="display:grid;gap:6px;min-width:0"><h1>' + esc(c.nome || c.email) + '</h1><span class="sotto" style="overflow-wrap:anywhere">' + esc(c.email || '') + (c.telefono ? ' · ' + esc(c.telefono) : '') + ' · cliente dal ' + esc(NF.fmtData.format(new Date(c.creato_il))) + '</span></div>' +
+        '<div class="contatti">' + (wa ? '<a class="btn btn-wa" href="' + esc(wa) + '" target="_blank" rel="noopener">WhatsApp</a>' : '') + (c.email ? '<a class="btn btn-ghost" href="mailto:' + esc(c.email) + '">Email</a>' : '') + '</div></div>' +
+        '<div class="griglia-app"><div class="colonna">' +
+        '<section class="pannello"><header><h2>Percorso</h2><span class="sotto">Il cliente vede stato, servizio e tappa</span></header>' +
+        '<div class="campi-griglia"><label class="campo" for="ed-stato">Stato<select id="ed-stato">' + NF.STATI.map(function (s) { return '<option' + (c.stato === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></label>' +
+        '<label class="campo" for="ed-serv">Servizio<select id="ed-serv"><option value="">Da definire</option>' + NF.SERVIZI.map(function (s) { return '<option' + (c.servizio === s ? ' selected' : '') + '>' + esc(s) + '</option>'; }).join('') + '</select></label>' +
+        '<label class="campo" for="ed-fase">Fase<select id="ed-fase"><option value="">—</option>' + Object.keys(NF.FASI).map(function (k) { return '<option value="' + k + '"' + (c.fase === k ? ' selected' : '') + '>' + NF.FASI[k] + '</option>'; }).join('') + '</select></label></div>' +
+        '<div style="display:grid;gap:8px"><span class="sotto">Tappe completate</span><div class="passi-edit" id="ed-passo">' +
+        ['Nessuna'].concat(NF.TAPPE).map(function (t, i) { return '<button type="button" data-p="' + i + '" aria-pressed="' + (c.passo === i) + '">' + (i ? i + '. ' : '') + esc(t) + '</button>'; }).join('') + '</div></div>' +
+        (c.obiettivo ? '<p><b>Obiettivo del cliente:</b> ' + esc(c.obiettivo) + '</p>' : '') + '</section>' +
+        '<section class="pannello"><header><h2>Documenti</h2><span class="sotto">I file caricati da te appaiono al cliente come "Da Naomi"</span></header><div id="drop"></div><div id="docs"></div></section>' +
+        '<section class="pannello"><header><h2>Appuntamenti</h2></header><div id="app-lista"></div>' +
+        '<form id="f-app" class="form-riga"><label class="campo" for="ap-data">Giorno e ora<input id="ap-data" type="datetime-local" required></label>' +
+        '<label class="campo" for="ap-dur">Durata<select id="ap-dur"><option value="20">20 min</option><option value="45">45 min</option><option value="60" selected>60 min</option><option value="90">90 min</option></select></label>' +
+        '<label class="campo" for="ap-tit">Titolo<input id="ap-tit" required placeholder="Es. Simulazione colloquio"></label>' +
+        '<label class="campo" for="ap-link">Link videochiamata (solo per le sessioni)<input id="ap-link" type="url" placeholder="Vuoto = ti chiamo al telefono"></label>' +
+        '<button class="btn btn-scuro" type="submit">Aggiungi</button></form></section>' +
+        '</div><div class="colonna">' +
+        '<section class="pannello"><header><h2>Messaggi</h2><span class="sotto" id="stato-letti"></span></header><div class="chat" id="chat" aria-live="polite"></div><div id="comp"></div></section>' +
+        '<section class="pannello"><header><h2>Note private</h2><span class="sotto">Il cliente non le vede</span></header>' +
+        '<form id="f-nota" style="display:grid;gap:8px"><label class="campo" for="nota-t">Nuova nota<textarea id="nota-t" placeholder="Appunti dalla call, prossimi passi, idee…" style="min-height:90px"></textarea></label><button class="btn btn-ghost" type="submit">Salva nota</button></form><div id="note" style="display:grid;gap:10px"></div></section>' +
+        '</div></div>';
+      var salva = async function (campi, msg) { var r = await NF.aggiornaProfilo(id, campi); if (r.errore) UI.toast(r.errore, true); else { UI.toast(msg || 'Salvato'); aggiornaContatori(); } };
+      document.getElementById('ed-stato').onchange = function (e) { salva({ stato: e.target.value }, 'Stato aggiornato'); };
+      document.getElementById('ed-serv').onchange = function (e) { salva({ servizio: e.target.value || null }, 'Servizio aggiornato'); };
+      document.getElementById('ed-fase').onchange = function (e) { salva({ fase: e.target.value || null }, 'Fase aggiornata'); };
+      document.querySelectorAll('#ed-passo button').forEach(function (b) {
+        b.onclick = function () { document.querySelectorAll('#ed-passo button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); salva({ passo: +b.getAttribute('data-p') }, 'Percorso aggiornato'); };
+      });
+      UI.dropzone(document.getElementById('drop'), { id: 'file-naomi', titolo: 'Carica un documento per ' + ((c.nome || '').split(' ')[0] || 'il cliente'), naomi: true, clienteId: function () { return id; }, dopo: function () { disegnaCliente(id); } });
+      composerApi = UI.composer(document.getElementById('comp'), { id: 'msg-naomi', placeholder: 'Rispondi a ' + ((c.nome || '').split(' ')[0] || 'cliente') + '…', naomi: true, clienteId: function () { return id; }, suScrittura: function () { if (canale) canale.segnala(true); },
+        dopo: function () { disegnaCliente(id); if (id === 'c1') NF.simulaRisposta(id, false, 'Grazie Naomi, lo guardo stasera! (Risposta automatica di esempio)', 3200); } });
+      document.getElementById('f-app').addEventListener('submit', async function (e) {
+        e.preventDefault(); var f = e.target;
+        var link = f.querySelector('#ap-link').value.trim();
+        if (link && !/^https:\/\//.test(link)) return UI.toast('Il link deve iniziare con https://', true);
+        var r = await NF.aggiungiAppuntamento({ cliente_id: id, inizio: new Date(f.querySelector('#ap-data').value).toISOString(), durata_min: +f.querySelector('#ap-dur').value, titolo: f.querySelector('#ap-tit').value.trim(), link: link || null, note: null });
+        if (r.errore) return UI.toast(r.errore, true); f.reset(); UI.toast('Appuntamento aggiunto'); disegnaCliente(id);
+      });
+      document.getElementById('f-nota').addEventListener('submit', async function (e) {
+        e.preventDefault(); var ta = document.getElementById('nota-t'); var r = await NF.aggiungiNota(id, ta.value);
+        if (r.errore) return UI.toast(r.errore, true); ta.value = ''; UI.toast('Nota salvata'); disegnaCliente(id);
+      });
+    }
+    await disegnaCliente(id);
+    await NF.segnaLetti(id, false); aggiornaContatori();
+  }
+
+  async function disegnaCliente(id) {
+    var c = await NF.cliente(id);
+    var res = await Promise.all([NF.documenti(id), NF.commenti(id), NF.appuntamenti(id), NF.note(id)]);
+    var docs = res[0], msg = res[1], app = res[2], note = res[3];
+    var box = document.getElementById('docs'); if (!box) return;
+    box.innerHTML = UI.righeDocumenti(docs, { vuoto: 'Nessun documento caricato.', eliminaTutti: true });
+    UI.collegaDocumenti(box, docs, { commenta: function (d) { composerApi.riferisci(d); }, aggiorna: function () { disegnaCliente(id); } });
+    UI.segnaNuovi(box, '.doc');
+    UI.chat(document.getElementById('chat'), msg, docs, { naomi: true, nomeCliente: (c.nome || 'Cliente').split(' ')[0], vuoto: 'Nessun messaggio ancora.' });
+    var ultimoMio = msg.filter(function (m) { return m.da_naomi; }).pop();
+    document.getElementById('stato-letti').textContent = ultimoMio ? (ultimoMio.letto ? 'Il tuo ultimo messaggio è stato letto' : 'Ultimo messaggio non ancora letto') : '';
+    var ora = Date.now();
+    document.getElementById('app-lista').innerHTML = app.length ? '<ul class="doc-lista">' + app.map(function (a) {
+      var passato = new Date(a.inizio).getTime() < ora - 3600000;
+      return '<li class="doc" style="opacity:' + (passato ? '.55' : '1') + '"><span class="icona">' + new Date(a.inizio).getDate() + '</span><div style="min-width:0"><div class="nome">' + esc(a.titolo) + '</div><div class="meta"><span>' + esc(NF.fmtDataOra.format(new Date(a.inizio))) + '</span><span>' + a.durata_min + ' min</span><span>' + (/^https:\/\//.test(a.link || '') ? 'videochiamata' : 'telefonata' + (c.telefono ? ' · ' + esc(c.telefono) : ' · manca il numero')) + '</span>' + (passato ? '<span>concluso</span>' : '') + '</div></div>' +
+        '<div class="azioni">' + (/^https:\/\//.test(a.link || '') ? '<a class="icon-btn" href="' + esc(a.link) + '" target="_blank" rel="noopener">Apri</a>' : '') + '<button class="icon-btn pericolo" type="button" data-app="' + esc(a.id) + '">Elimina</button></div></li>';
+    }).join('') + '</ul>' : '<div class="vuoto">Nessun appuntamento. Aggiungilo qui sotto: il cliente lo vedrà nella sua area.</div>';
+    document.querySelectorAll('[data-app]').forEach(function (b) { b.onclick = async function () { var r = await NF.eliminaAppuntamento(b.getAttribute('data-app')); if (r.errore) UI.toast(r.errore, true); else disegnaCliente(id); }; });
+    document.getElementById('note').innerHTML = note.map(function (n) {
+      return '<div class="nota-priv"><p>' + esc(n.testo) + '</p><small><span>' + esc(NF.quando(n.creato_il)) + '</span><button class="icon-btn pericolo" type="button" data-nota="' + esc(n.id) + '">Elimina</button></small></div>';
+    }).join('');
+    document.querySelectorAll('[data-nota]').forEach(function (b) { b.onclick = async function () { var r = await NF.eliminaNota(b.getAttribute('data-nota')); if (r.errore) UI.toast(r.errore, true); else disegnaCliente(id); }; });
+  }
+
+  // ---------------- richieste dal sito ----------------
+  async function vistaRichieste() {
+    clienteAperto = null;
+    var rq = await NF.richieste();
+    var origine = { contatti: 'Modulo contatti', audit: 'Audit gratuito', prenota: 'Prenotazione' };
+    main.className = 'admin-main chiaro-ui';
+    main.innerHTML = '<div class="saluto"><div style="display:grid;gap:6px"><p class="eyebrow">Richieste dal sito</p><h1>Chi ti ha scritto</h1><p class="lead">Messaggi arrivati dal modulo contatti e dalla richiesta di audit gratuito.</p></div></div>' +
+      '<div style="display:grid;gap:12px" class="anima-righe">' + (rq.length ? rq.map(function (r) {
+        var wa = NF.waLink(r.telefono, 'Ciao ' + r.nome.split(' ')[0] + ', sono Naomi Filippi: ti rispondo alla richiesta che mi hai inviato dal sito.');
+        return '<article class="richiesta' + (r.gestita ? ' gestita' : '') + '"><header><div><b>' + esc(r.nome) + '</b> <span class="sotto">· ' + esc(r.email) + (r.telefono ? ' · ' + esc(r.telefono) : '') + '</span></div>' +
+          '<span class="pill ' + (r.gestita ? 'concluso' : 'nuovo') + '">' + (r.gestita ? 'gestita' : 'nuova') + '</span></header>' +
+          '<div class="sotto">' + esc(origine[r.origine] || r.origine) + ' · ' + esc(NF.quando(r.creato_il)) + (r.servizio ? ' · ' + esc(r.servizio) : '') + (r.linkedin ? ' · ' + esc(r.linkedin) : '') + '</div>' +
+          (r.messaggio ? '<p>' + esc(r.messaggio) + '</p>' : '') +
+          '<div class="azioni">' + (wa ? '<a class="btn btn-wa" href="' + esc(wa) + '" target="_blank" rel="noopener">Rispondi su WhatsApp</a>' : '') +
+          '<a class="btn btn-ghost" href="mailto:' + esc(r.email) + '?subject=' + encodeURIComponent('La tua richiesta a Naomi Filippi') + '">Rispondi via email</a>' +
+          '<button class="btn btn-ghost" type="button" data-r="' + esc(r.id) + '" data-g="' + (!r.gestita) + '">' + (r.gestita ? 'Segna come da gestire' : 'Segna come gestita') + '</button></div></article>';
+      }).join('') : '<div class="vuoto">Nessuna richiesta per ora.</div>') + '</div>';
+    main.querySelectorAll('[data-r]').forEach(function (b) {
+      b.onclick = async function () { var r = await NF.segnaRichiesta(b.getAttribute('data-r'), b.getAttribute('data-g') === 'true'); if (r.errore) UI.toast(r.errore, true); else { aggiornaContatori(); vistaRichieste(); } };
+    });
+  }
+
+  NF.alCambioAccesso(function (ev) { if (ev === 'SIGNED_OUT') NF.vaiAdAccedi(); });
+  avvia();
+})();
+</script>
+</body>
+</html>

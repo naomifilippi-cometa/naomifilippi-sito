@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Area clienti · Naomi Filippi</title>
+<meta name="description" content="Area riservata ai clienti di Naomi Filippi: documenti, messaggi e percorso di consulenza.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#14060F">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script src="assets/config.js"></script>
+<script src="assets/guardia.js"></script>
+</head>
+<body class="app">
+<div id="root"><div class="scheletro" role="status" aria-label="Caricamento della tua area"><div class="sk-top"></div><div class="wrap sk-corpo"><div class="sk sk-titolo"></div><div class="sk sk-riga"></div><div class="sk-griglia"><div class="sk sk-pannello"></div><div class="sk sk-pannello alto"></div><div class="sk sk-pannello"></div></div></div></div></div>
+<noscript><p style="padding:24px">L'area clienti richiede JavaScript attivo nel browser.</p></noscript>
+
+<script src="assets/vendor/supabase.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/ui.js"></script>
+<script>
+(function () {
+  var root = document.getElementById('root'), esc = NF.esc, io = null, stacca = null, composerApi = null, canale = null, primaVolta = true;
+  var demoQ = NF.live ? '' : 'demo=admin';
+
+  async function avvia() {
+    var s = await NF.sessione();
+    if (!s) return NF.vaiAdAccedi();
+    if (await NF.eAdmin()) return location.replace(NF.pagina('admin', demoQ));
+    io = await NF.mioProfilo();
+    if (!io) { root.innerHTML = '<div class="negato"><h1>Profilo in preparazione</h1><p>Riprova tra qualche secondo.</p><button class="btn btn-lume" onclick="location.reload()">Riprova</button></div>'; return; }
+    struttura();
+    await disegna();
+    NF.segnaLetti(io.id, true);
+    if (stacca) stacca();
+    stacca = NF.ascolta(io.id, function () { disegna(); NF.segnaLetti(io.id, true); });
+    canale = NF.canaleScrittura(io.id, function (daNaomi) { if (daNaomi) UI.scrive(document.getElementById('chat'), 'Naomi'); });
+  }
+
+  function struttura() {
+    root.innerHTML = UI.demoBar('Stai vedendo l\'area clienti come la vedrebbe Anna Rossi. Prova a caricare un file o a scrivere un messaggio.') +
+      '<header class="app-top"><div class="wrap">' +
+      '<a class="logo" href="index.html" aria-label="Torna al sito">' + UI.LOGO + '<div style="line-height:1"><b>Naomi Filippi</b><span>area clienti</span></div></a>' +
+      '<div class="chi-sono">' + UI.avatar(io) + '<span class="testo-utente">' + esc(io.nome || io.email) + '<small>' + esc(io.email || '') + '</small></span>' +
+      '<button class="btn-mini" id="esci" type="button">Esci</button></div></div></header>' +
+      '<main class="app-main chiaro-ui anima"><div class="wrap">' +
+      '<div class="saluto"><div style="display:grid;gap:8px"><p class="eyebrow">Area clienti</p><h1 id="ciao"></h1><p class="lead" id="sotto-ciao"></p></div><span id="stato-pill"></span></div>' +
+      '<nav class="salti" aria-label="Vai a"><a href="#p-percorso">Percorso</a><a href="#p-documenti">Documenti</a><a href="#p-messaggi">Messaggi <span id="salto-badge"></span></a><a href="#p-profilo">Profilo</a></nav>' +
+      '<div class="griglia-app"><div class="colonna">' +
+      '<section class="pannello" id="p-percorso"><header><h2>Il tuo percorso</h2><span class="sotto" id="servizio"></span></header><ol class="percorso disegna" id="percorso"></ol><div id="appunt"></div></section>' +
+      '<section class="pannello" id="p-documenti"><header><h2>Documenti</h2><span class="sotto">Solo tu e Naomi potete vederli</span></header><div id="drop"></div><div id="docs"></div></section>' +
+      '</div><div class="colonna">' +
+      '<section class="pannello" id="p-messaggi"><header><h2>Messaggi con Naomi</h2><a class="btn-mini" id="wa" target="_blank" rel="noopener">WhatsApp</a></header><div class="chat" id="chat" aria-live="polite"></div><div id="comp"></div></section>' +
+      '<section class="pannello" id="p-profilo"><header><h2>Il tuo profilo</h2></header>' +
+      '<form id="f-profilo" style="display:grid;gap:12px">' +
+      '<label class="campo" for="pr-nome">Nome e cognome<input id="pr-nome" name="nome" autocomplete="name"></label>' +
+      '<label class="campo" for="pr-tel">Telefono (Naomi ti chiama a questo numero)<input id="pr-tel" name="telefono" type="tel" autocomplete="tel"></label>' +
+      '<label class="campo" for="pr-fase">Fase della carriera<select id="pr-fase" name="fase"><option value="">Scegli…</option>' + Object.keys(NF.FASI).map(function (k) { return '<option value="' + k + '">' + NF.FASI[k] + '</option>'; }).join('') + '</select></label>' +
+      '<label class="campo" for="pr-obiettivo">Il tuo obiettivo<textarea id="pr-obiettivo" name="obiettivo" placeholder="Es. passare a un ruolo da Product Manager entro l\'anno"></textarea></label>' +
+      '<button class="btn btn-scuro" type="submit">Salva profilo</button></form></section>' +
+      '</div></div></div></main>';
+
+    document.getElementById('esci').addEventListener('click', async function () { if (stacca) stacca(); if (canale) canale.chiudi(); await NF.esci(); NF.vaiAdAccedi('uscito=1'); });
+    var cfg = window.NF_CONFIG;
+    document.getElementById('wa').href = 'https://wa.me/' + cfg.WHATSAPP + '?text=' + encodeURIComponent('Ciao Naomi, sono ' + (io.nome || '') + ', ti scrivo dall\'area clienti.');
+    UI.dropzone(document.getElementById('drop'), { id: 'file-cliente', titolo: 'Carica un documento', naomi: false, clienteId: function () { return io.id; }, dopo: disegna });
+    composerApi = UI.composer(document.getElementById('comp'), { id: 'msg-cliente', placeholder: 'Scrivi a Naomi…', naomi: false, clienteId: function () { return io.id; }, suScrittura: function () { if (canale) canale.segnala(false); }, dopo: function () { disegna(); NF.simulaRisposta(io.id, true, 'Grazie! Ho ricevuto il tuo messaggio, ti rispondo entro oggi. (Risposta automatica di esempio)', 2500); } });
+    var f = document.getElementById('f-profilo');
+    f.nome.value = io.nome || ''; f.telefono.value = io.telefono || ''; f.fase.value = io.fase || ''; f.obiettivo.value = io.obiettivo || '';
+    f.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var campi = { nome: f.nome.value.trim(), telefono: f.telefono.value.trim(), fase: f.fase.value || null, obiettivo: f.obiettivo.value.trim() };
+      var r = await NF.aggiornaProfilo(io.id, campi);
+      if (r.errore) return UI.toast(r.errore, true);
+      Object.assign(io, campi); UI.toast('Profilo salvato'); intestazione();
+    });
+  }
+
+  function intestazione() {
+    var nome = (io.nome || '').split(' ')[0];
+    document.getElementById('ciao').innerHTML = esc(UI.saluto()) + (nome ? ', ' + esc(nome) : '') + '. <span class="mano" aria-hidden="true">✦</span>';
+    document.getElementById('sotto-ciao').textContent = io.obiettivo ? 'Obiettivo: ' + io.obiettivo : 'Completa il profilo con il tuo obiettivo: aiuta Naomi a prepararsi.';
+    document.getElementById('stato-pill').innerHTML = '<span class="pill ' + esc((io.stato || 'nuovo').replace(' ', '-')) + '">' + esc(io.stato || 'nuovo') + '</span>';
+    document.getElementById('servizio').textContent = io.servizio ? 'Servizio: ' + io.servizio : 'Il servizio verrà indicato dopo la call conoscitiva';
+    var p = io.passo || 0, ol = document.getElementById('percorso');
+    if (ol._p !== p) ol.innerHTML = NF.TAPPE.map(function (t, i) {
+      var cls = i < p ? 'fatto' : (i === p ? 'ora' : '');
+      return '<li class="' + cls + '"><b>Tappa ' + (i + 1) + '</b>' + esc(t) + '</li>';
+    }).join('');
+    ol._p = p;
+  }
+
+  async function disegna() {
+    var nuovo = await NF.mioProfilo(); if (nuovo) io = Object.assign(io || {}, nuovo);
+    intestazione();
+    var res = await Promise.all([NF.documenti(io.id), NF.commenti(io.id), NF.appuntamenti(io.id)]);
+    var docs = res[0], msg = res[1], app = res[2];
+    var box = document.getElementById('docs');
+    box.innerHTML = UI.righeDocumenti(docs, { vuoto: 'Nessun documento. Carica il tuo CV attuale per iniziare.', eliminaTutti: false });
+    UI.collegaDocumenti(box, docs, { commenta: function (d) { composerApi.riferisci(d); }, aggiorna: disegna });
+    UI.segnaNuovi(box, '.doc');
+    var lista = box.querySelector('.doc-lista'); if (lista && primaVolta) lista.classList.add('anima-righe');
+    if (primaVolta) { primaVolta = false; setTimeout(function () { var m = root.querySelector('.anima'); if (m) m.classList.remove('anima'); }, 1200); }
+    UI.chat(document.getElementById('chat'), msg, docs, { naomi: false, nomeCliente: 'Tu', vuoto: 'Nessun messaggio. Scrivi a Naomi per qualsiasi domanda sul tuo percorso.' });
+    var nonLetti = msg.filter(function (m) { return m.da_naomi && !m.letto; }).length;
+    document.getElementById('salto-badge').innerHTML = nonLetti ? '<span class="badge-num">' + nonLetti + '</span>' : '';
+    var prossimi = app.filter(function (a) { return new Date(a.inizio) > new Date(Date.now() - 3600000); });
+    var a = prossimi[0], ab = document.getElementById('appunt');
+    if (!a) ab.innerHTML = '<div class="vuoto">Nessun appuntamento in programma. <a href="prenota.html">Prenota una sessione</a> o scrivi a Naomi.</div>';
+    else {
+      var d = new Date(a.inizio), video = /^https:\/\//.test(a.link || '');
+      ab.innerHTML = '<div class="appunt"><div class="giorno"><span>' + esc(d.toLocaleDateString('it-IT', { month: 'short' })) + '</span><b>' + d.getDate() + '</b></div>' +
+        '<div><p class="eyebrow" style="color:var(--lume-chiaro)">Prossimo appuntamento · ' + (video ? 'videochiamata' : 'al telefono') + '</p><h3 style="font-size:1.25rem;color:#fff">' + esc(a.titolo) + '</h3><p>' + esc(NF.fmtDataOra.format(d)) + ' · ' + a.durata_min + ' min' + (a.note ? ' · ' + esc(a.note) : '') + '</p></div>' +
+        '<div class="azioni">' + (video ? '<a class="btn btn-lume" href="' + esc(a.link) + '" target="_blank" rel="noopener">Entra nella videochiamata</a>'
+          : '<span class="modo-tel">☎ Ti chiamo io' + (io.telefono ? ' al ' + esc(io.telefono) : '') + '</span>' + (io.telefono ? '' : '<a class="btn-mini" href="#p-profilo">Aggiungi il tuo numero</a>')) +
+        (prossimi.length > 1 ? '<span style="color:var(--testo-2);font-size:.85rem;align-self:center">+' + (prossimi.length - 1) + ' in programma</span>' : '') + '</div></div>';
+    }
+  }
+
+  NF.alCambioAccesso(function (ev) { if (ev === 'SIGNED_OUT') NF.vaiAdAccedi(); });
+  avvia();
+})();
+</script>
+</body>
+</html>

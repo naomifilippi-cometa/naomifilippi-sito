@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /accedi
+Disallow: /auth-callback
+Disallow: /area
+Disallow: /admin
+
+Sitemap: https://naomifilippi.it/sitemap.xml

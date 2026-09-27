@@ -1,0 +1,117 @@
+/* Pagina di accesso (split screen) e pagina di passaggio dopo il login */
+@font-face{font-family:"Roboto";font-style:normal;font-weight:500;font-display:swap;src:url(../fonts/roboto-500.woff2) format("woff2")}
+
+body.pagina-accedi{background:var(--avorio);min-height:100svh}
+.accedi{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);min-height:100vh;min-height:100svh}
+
+/* ---- lato cielo ---- */
+.acc-cielo{position:relative;overflow:hidden;color:var(--testo);display:grid;grid-template-rows:auto 1fr auto;gap:32px;
+  padding:max(28px,env(safe-area-inset-top,0px)) clamp(24px,5vw,72px) clamp(28px,5vw,56px) max(clamp(24px,5vw,72px),env(safe-area-inset-left,0px));
+  background:radial-gradient(700px 520px at 85% 10%,rgba(214,51,132,.3),transparent 60%),radial-gradient(700px 600px at 0% 100%,rgba(21,122,126,.45),transparent 60%),linear-gradient(160deg,var(--prugna),var(--notte) 60%,var(--petrolio-2) 140%)}
+.acc-cielo canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.acc-cielo > *{position:relative}
+.acc-logo{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none;min-height:44px;justify-self:start;view-transition-name:logo}
+.acc-logo svg{width:44px;height:37px;overflow:visible}
+.acc-logo b{display:block;font-family:var(--f-display);font-style:italic;font-weight:500;font-size:1.4rem;line-height:1}
+.acc-logo small{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--testo-2);margin-top:6px}
+.acc-voci{align-self:end;display:grid;max-width:34rem}
+.acc-voci figure{grid-area:1/1;margin:0;display:grid;gap:18px;opacity:0;transform:translateY(14px);transition:opacity .8s var(--ease-out),transform .9s var(--ease-out);pointer-events:none}
+.acc-voci figure.on{opacity:1;transform:none;pointer-events:auto}
+.acc-voci blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-weight:400;font-size:clamp(1.6rem,2.8vw,2.5rem);line-height:1.18;text-wrap:balance}
+.acc-voci blockquote::before{content:"“";display:block;font-size:3.4em;line-height:.6;color:var(--lume-chiaro);height:.42em}
+.acc-voci figcaption{display:flex;align-items:center;gap:12px;font-size:.9rem;color:var(--testo-2)}
+.acc-voci figcaption img{width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px rgba(242,154,198,.4)}
+.acc-voci figcaption b{display:block;color:var(--testo);font-weight:600}
+.acc-punti{display:flex;gap:8px}
+.acc-punti button{width:34px;height:44px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.acc-punti button::before{content:"";width:22px;height:3px;border-radius:3px;background:rgba(243,234,240,.25);transition:background .3s,width .3s}
+.acc-punti button[aria-pressed="true"]::before{background:var(--lume-chiaro);width:28px}
+.acc-voto{display:flex;align-items:center;gap:14px;font-size:.88rem;color:var(--testo-2);border-top:1px solid var(--linea);padding-top:18px}
+.acc-voto b{font-family:var(--f-display);font-weight:400;font-size:2.4rem;line-height:1;color:#fff}
+.acc-voto .stelle{color:var(--lume-chiaro);letter-spacing:.08em}
+
+/* ---- lato modulo ---- */
+.acc-form{display:grid;grid-template-rows:auto 1fr auto;gap:20px;padding:max(24px,env(safe-area-inset-top,0px)) max(clamp(20px,5vw,64px),env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) clamp(20px,5vw,64px)}
+.acc-torna{justify-self:end;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--linea-chiara);color:var(--inchiostro);text-decoration:none;font-weight:600;font-size:.9rem;transition:border-color var(--dur-stato),color var(--dur-stato)}
+.acc-torna:hover{border-color:var(--magenta);color:var(--magenta)}
+.acc-card{align-self:center;justify-self:center;width:min(100%,430px);display:grid}
+.stato{grid-area:1/1;display:grid;gap:20px;align-content:start}
+.stato[hidden]{display:none}
+.stato-entra{animation:stato-entra .5s var(--ease-out) both}
+@keyframes stato-entra{from{opacity:0;transform:translateY(14px)}}
+.acc-card .eyebrow{color:var(--magenta)}
+.acc-card h1{font-size:clamp(2.2rem,4.4vw,3.1rem);font-weight:400;line-height:1.05;letter-spacing:-.01em}
+.acc-card h1 em{color:var(--magenta)}
+.acc-card .lead{font-size:1.02rem}
+.acc-card > .stato > *{animation:sali-acc .7s var(--ease-out) both}
+.acc-card > .stato > *:nth-child(2){animation-delay:.05s}.acc-card > .stato > *:nth-child(3){animation-delay:.1s}.acc-card > .stato > *:nth-child(4){animation-delay:.15s}
+.acc-card > .stato > *:nth-child(5){animation-delay:.2s}.acc-card > .stato > *:nth-child(6){animation-delay:.25s}.acc-card > .stato > *:nth-child(7){animation-delay:.3s}
+@keyframes sali-acc{from{opacity:0;transform:translateY(12px)}}
+
+.demo-nota{display:grid;gap:4px;font-size:.84rem;color:#0B4A52;background:rgba(21,122,126,.1);border:1px dashed rgba(21,122,126,.45);border-radius:14px;padding:12px 14px}
+.demo-nota b{color:var(--petrolio)}
+.demo-nota code{font-family:var(--f-mono);font-size:.8rem;background:rgba(255,255,255,.7);padding:1px 5px;border-radius:5px}
+
+.provider-lista{display:grid;gap:10px}
+/* pulsante Google secondo le linee guida (tema chiaro): bianco, bordo #747775, testo #1F1F1F, Roboto Medium, logo "G" a colori */
+.gsi{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:48px;padding:0 12px;border-radius:24px;border:1px solid #747775;background:#FFFFFF;color:#1F1F1F;
+  font:500 15px/20px "Roboto",arial,sans-serif;letter-spacing:.25px;cursor:pointer;transition:background-color .218s,border-color .218s,box-shadow .218s}
+.gsi:hover{box-shadow:0 1px 2px 0 rgba(60,64,67,.30),0 1px 3px 1px rgba(60,64,67,.15)}
+.gsi:hover::after,.gsi:focus-visible::after{content:"";position:absolute;inset:0;border-radius:inherit;background:#303030;opacity:.08}
+.gsi svg{width:20px;height:20px;flex:none}
+.li-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:48px;padding:0 12px;border-radius:24px;border:1px solid #0A66C2;background:#0A66C2;color:#fff;font:600 15px/20px var(--f-body);cursor:pointer;transition:background-color .2s,box-shadow .2s}
+.li-btn:hover{background:#004182;box-shadow:0 8px 20px -10px rgba(10,102,194,.7)}
+.li-btn svg{width:20px;height:20px;flex:none}
+.gsi[aria-busy="true"],.li-btn[aria-busy="true"],.acc-card .btn[aria-busy="true"]{pointer-events:none}
+.gsi[aria-busy="true"] svg,.li-btn[aria-busy="true"] svg{animation:gira 1s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+
+.oppure{display:flex;align-items:center;gap:12px;color:var(--inchiostro-2);font-size:.82rem}
+.oppure::before,.oppure::after{content:"";flex:1;height:1px;background:var(--linea-chiara)}
+#f-email{display:grid;gap:10px}
+#f-email .btn{width:100%;min-height:50px;position:relative}
+#f-email .btn .spin{display:none;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:gira .8s linear infinite}
+#f-email .btn[aria-busy="true"] .spin{display:inline-block}
+#f-email .btn[aria-busy="true"] .t{opacity:.7}
+.campo input.errore{border-color:var(--errore);animation:scuoti .4s var(--ease-out)}
+@keyframes scuoti{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.acc-card .esito{margin:0}
+.acc-card .nota{font-size:.8rem;color:var(--inchiostro-2)}
+.acc-fondo{justify-self:center;text-align:center;font-size:.92rem;color:var(--inchiostro-2)}
+.acc-fondo a{font-weight:600}
+
+/* stato "email inviata" */
+.busta{width:88px;height:88px}
+.busta path,.busta rect{fill:none;stroke:var(--magenta);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:traccia 1.1s var(--ease-out) forwards}
+.busta .v{stroke:var(--ok);animation-delay:.7s}
+.busta circle{fill:rgba(31,122,85,.12);transform-origin:64px 62px;transform:scale(0);animation:pop .5s var(--ease-molla) .6s forwards}
+@keyframes traccia{to{stroke-dashoffset:0}}
+@keyframes pop{to{transform:scale(1)}}
+.stato-inviata h2{font-size:clamp(1.9rem,3.6vw,2.5rem);font-style:italic;font-weight:400}
+.stato-inviata p{color:var(--inchiostro-2)}
+.stato-inviata .azioni{display:flex;flex-wrap:wrap;gap:10px}
+.stato-dentro{justify-items:center;text-align:center}
+.stato-dentro p{color:var(--inchiostro-2)}
+
+@media (max-width:900px){
+  .accedi{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .acc-cielo{grid-template-rows:auto;padding-bottom:26px;gap:18px}
+  .acc-voci,.acc-voto{display:none}
+  .acc-form{padding-top:28px}
+  .acc-torna{position:absolute;top:max(18px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));border-color:var(--linea);color:var(--testo)}
+  .acc-torna:hover{color:#fff;border-color:var(--lume-chiaro)}
+  .acc-card{align-self:start}
+}
+@media (max-width:420px){.acc-torna span:last-child{display:none}.acc-torna{width:44px;padding:0;justify-content:center}}
+
+/* ---- pagina di passaggio ---- */
+.passaggio{min-height:100vh;min-height:100svh;display:grid;place-items:center;text-align:center;padding:24px;color:var(--testo);
+  background:radial-gradient(700px 520px at 85% 10%,rgba(214,51,132,.3),transparent 60%),radial-gradient(700px 600px at 0% 100%,rgba(21,122,126,.45),transparent 60%),linear-gradient(160deg,var(--prugna),var(--notte) 60%)}
+.passaggio .in{display:grid;gap:18px;justify-items:center;max-width:420px}
+.passaggio .orbita{position:relative;width:120px;height:120px}
+.passaggio .orbita svg{position:absolute;inset:0;width:100%;height:100%;animation:gira 1.6s linear infinite}
+.passaggio .orbita .logo-c{position:absolute;inset:34px;animation:none}
+.passaggio h1{font-size:clamp(1.8rem,5vw,2.4rem);font-style:italic;font-weight:400}
+.passaggio p{color:var(--testo-2)}
+.passaggio .btn-ghost{border-color:var(--linea);color:var(--testo)}
+@media (prefers-reduced-motion:reduce){.acc-voci figure{transition:none}.busta path,.busta rect{stroke-dashoffset:0}.busta circle{transform:none}}
