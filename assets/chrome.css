@@ -37,7 +37,7 @@ html:active-view-transition-type(indietro)::view-transition-new(root){animation-
 .top.compatto{background:rgba(20,6,15,.94);box-shadow:0 12px 34px -22px rgba(0,0,0,.9)}
 .top.compatto .wrap{min-height:58px}
 .top .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;min-height:44px;flex:none;view-transition-name:logo}
-.top .logo svg{width:44px;height:37px;flex:none;overflow:visible;transition:transform var(--dur-stato) var(--ease-out)}
+.top .logo svg{width:52px;height:52px;margin:-6px 0;flex:none;overflow:visible;transition:transform var(--dur-stato) var(--ease-out)}
 .top.compatto .logo svg{transform:scale(.9)}
 .top .logo b{display:block;font-family:var(--f-display);font-style:italic;font-weight:500;font-size:1.4rem;line-height:1;white-space:nowrap;letter-spacing:.01em}
 .top .logo small{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--testo-2);margin-top:6px;white-space:nowrap}

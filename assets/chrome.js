@@ -116,3 +116,9 @@
     });
   } catch (e) { }
 })();
+
+/* monogramma NF: con "riduci animazioni" la cometa resta ferma davanti alle lettere */
+(function () {
+  if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  document.querySelectorAll('svg.nf-logo').forEach(function (s) { try { s.pauseAnimations(); s.setCurrentTime(2.66); } catch (e) { } });
+})();

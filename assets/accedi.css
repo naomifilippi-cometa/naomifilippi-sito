@@ -11,7 +11,7 @@ body.pagina-accedi{background:var(--avorio);min-height:100svh}
 .acc-cielo canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .acc-cielo > *{position:relative}
 .acc-logo{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none;min-height:44px;justify-self:start;view-transition-name:logo}
-.acc-logo svg{width:44px;height:37px;overflow:visible}
+.acc-logo svg{width:54px;height:54px;overflow:visible}
 .acc-logo b{display:block;font-family:var(--f-display);font-style:italic;font-weight:500;font-size:1.4rem;line-height:1}
 .acc-logo small{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--testo-2);margin-top:6px}
 .acc-voci{align-self:end;display:grid;max-width:34rem}
@@ -113,7 +113,7 @@ body.pagina-accedi{background:var(--avorio);min-height:100svh}
 .passaggio .in{display:grid;gap:18px;justify-items:center;max-width:420px}
 .passaggio .orbita{position:relative;width:120px;height:120px}
 .passaggio .orbita svg{position:absolute;inset:0;width:100%;height:100%;animation:gira 1.6s linear infinite}
-.passaggio .orbita .logo-c{position:absolute;inset:34px;animation:none}
+.passaggio .orbita .logo-c{position:absolute;inset:26px;animation:none}.passaggio .orbita .logo-c svg{width:100%;height:100%;overflow:visible}
 .passaggio h1{font-size:clamp(1.8rem,5vw,2.4rem);font-style:italic;font-weight:400}
 .passaggio p{color:var(--testo-2)}
 .passaggio .btn-ghost{border-color:var(--linea);color:var(--testo)}

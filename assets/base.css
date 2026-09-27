@@ -53,7 +53,7 @@ p{margin:0}
 
 /* intestazione */
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;min-height:44px}
-.logo svg{width:44px;height:37px;flex:none;overflow:visible}
+.logo svg{width:50px;height:50px;flex:none;overflow:visible;margin:-4px 0}
 .logo b{font-family:var(--f-display);font-style:italic;font-weight:500;font-size:1.4rem;white-space:nowrap}
 .logo span,.logo small{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--testo-2);margin-top:5px}
 /* logo cometa animato */
