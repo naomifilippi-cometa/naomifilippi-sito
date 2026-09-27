@@ -15,8 +15,11 @@ body.pagina-accedi{background:var(--avorio);min-height:100svh}
 .acc-logo b{display:block;font-family:var(--f-display);font-style:italic;font-weight:500;font-size:1.4rem;line-height:1}
 .acc-logo small{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--testo-2);margin-top:6px}
 .acc-voci{align-self:end;display:grid;max-width:34rem}
-.acc-voci figure{grid-area:1/1;margin:0;display:grid;gap:18px;opacity:0;transform:translateY(14px);transition:opacity .8s var(--ease-out),transform .9s var(--ease-out);pointer-events:none}
-.acc-voci figure.on{opacity:1;transform:none;pointer-events:auto}
+.acc-voci figure{grid-area:1/1;margin:0;display:grid;gap:18px;opacity:0;transform:translateY(-10px);transition:opacity .3s var(--ease-in),transform .3s var(--ease-in);pointer-events:none;visibility:hidden}
+.acc-voci figure.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .7s var(--ease-out) .35s,transform .8s var(--ease-out) .35s,visibility 0s .35s}
+.acc-voci figure:not(.on){transition:opacity .3s var(--ease-in),transform .3s var(--ease-in),visibility 0s .3s}
+.acc-voci figure:not(.on){transform:translateY(-10px)}
+.acc-voci figure.on{animation:none}
 .acc-voci blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-weight:400;font-size:clamp(1.6rem,2.8vw,2.5rem);line-height:1.18;text-wrap:balance}
 .acc-voci blockquote::before{content:"“";display:block;font-size:3.4em;line-height:.6;color:var(--lume-chiaro);height:.42em}
 .acc-voci figcaption{display:flex;align-items:center;gap:12px;font-size:.9rem;color:var(--testo-2)}
