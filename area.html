@@ -54,6 +54,10 @@
       '</div><div class="colonna">' +
       '<section class="pannello" id="p-messaggi"><header><h2>Messaggi con Naomi</h2><a class="btn-mini" id="wa" target="_blank" rel="noopener">WhatsApp</a></header><div class="chat" id="chat" aria-live="polite"></div><div id="comp"></div></section>' +
       '<section class="pannello" id="p-profilo"><header><h2>Il tuo profilo</h2></header>' +
+      '<div class="foto-profilo" id="foto-profilo"><span class="foto-anteprima" id="pr-avatar"></span>' +
+      '<div class="foto-testo"><b id="foto-titolo">Foto profilo</b><small id="foto-aiuto"></small>' +
+      '<div class="foto-azioni"><button class="btn-mini" type="button" id="pr-foto-scegli">Carica una foto</button><button class="btn-mini foto-togli" type="button" id="pr-foto-togli" hidden>Rimuovi</button></div>' +
+      '<input id="pr-foto" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="solo-lettori" tabindex="-1" aria-hidden="true"></div></div>' +
       '<form id="f-profilo" style="display:grid;gap:12px">' +
       '<label class="campo" for="pr-nome">Nome e cognome<input id="pr-nome" name="nome" autocomplete="name"></label>' +
       '<label class="campo" for="pr-tel">Telefono (Naomi ti chiama a questo numero)<input id="pr-tel" name="telefono" type="tel" autocomplete="tel"></label>' +
@@ -67,6 +71,52 @@
     document.getElementById('wa').href = 'https://wa.me/' + cfg.WHATSAPP + '?text=' + encodeURIComponent('Ciao Naomi, sono ' + (io.nome || '') + ', ti scrivo dall\'area clienti.');
     UI.dropzone(document.getElementById('drop'), { id: 'file-cliente', titolo: 'Carica un documento', naomi: false, clienteId: function () { return io.id; }, dopo: disegna });
     composerApi = UI.composer(document.getElementById('comp'), { id: 'msg-cliente', placeholder: 'Scrivi a Naomi…', naomi: false, clienteId: function () { return io.id; }, suScrittura: function () { if (canale) canale.segnala(false); }, dopo: function () { disegna(); NF.simulaRisposta(io.id, true, 'Grazie! Ho ricevuto il tuo messaggio, ti rispondo entro oggi. (Risposta automatica di esempio)', 2500); } });
+    // ---------- foto profilo: ritagliata e rimpicciolita nel browser, salvata nel profilo ----------
+    var fotoIn = document.getElementById('pr-foto'), fotoBtn = document.getElementById('pr-foto-scegli'), fotoVia = document.getElementById('pr-foto-togli');
+    function disegnaFoto() {
+      var box = document.getElementById('foto-profilo'), ha = !!io.avatar_url;
+      document.getElementById('pr-avatar').innerHTML = UI.avatar(io, true);
+      box.classList.toggle('manca', !ha);
+      document.getElementById('foto-titolo').textContent = ha ? 'Foto profilo' : 'Aggiungi la tua foto';
+      document.getElementById('foto-aiuto').textContent = ha ? 'La vede solo Naomi. Puoi cambiarla quando vuoi.' : 'Aiuta Naomi a riconoscerti prima delle chiamate. La vede solo lei.';
+      fotoBtn.textContent = ha ? 'Cambia foto' : 'Carica una foto';
+      fotoVia.hidden = !ha;
+      var su = document.querySelector('.chi-sono .avatar'); if (su) su.outerHTML = UI.avatar(io);
+    }
+    function ritaglia(file) {
+      return new Promise(function (ok, ko) {
+        var url = URL.createObjectURL(file), img = new Image();
+        img.onload = function () {
+          var lato = Math.min(img.naturalWidth, img.naturalHeight), L = 320, c = document.createElement('canvas');
+          c.width = c.height = L;
+          var x = c.getContext('2d'); x.imageSmoothingQuality = 'high';
+          x.drawImage(img, (img.naturalWidth - lato) / 2, (img.naturalHeight - lato) / 2, lato, lato, 0, 0, L, L);
+          URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', .85));
+        };
+        img.onerror = function () { URL.revokeObjectURL(url); ko(); };
+        img.src = url;
+      });
+    }
+    async function salvaFoto(valore, messaggio) {
+      fotoBtn.setAttribute('aria-busy', 'true'); fotoBtn.disabled = true;
+      var r = await NF.aggiornaProfilo(io.id, { avatar_url: valore });
+      fotoBtn.removeAttribute('aria-busy'); fotoBtn.disabled = false;
+      if (r.errore) return UI.toast('Foto non salvata: ' + r.errore, true);
+      io.avatar_url = valore; disegnaFoto(); UI.toast(messaggio);
+      var a = document.querySelector('#pr-avatar .avatar'); if (a && !UI.riduci) a.animate([{ transform: 'scale(.6)', opacity: 0 }, { transform: 'scale(1.08)', opacity: 1 }, { transform: 'scale(1)' }], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    }
+    fotoBtn.addEventListener('click', function () { fotoIn.click(); });
+    fotoIn.addEventListener('change', async function () {
+      var file = fotoIn.files && fotoIn.files[0]; fotoIn.value = '';
+      if (!file) return;
+      if (file.size > 15 * 1024 * 1024) return UI.toast('La foto è troppo pesante (massimo 15 MB).', true);
+      var dati;
+      try { dati = await ritaglia(file); } catch (e) { return UI.toast('Non riesco a leggere questa immagine: prova con una foto JPG o PNG.', true); }
+      salvaFoto(dati, 'Foto aggiornata');
+    });
+    fotoVia.addEventListener('click', function () { salvaFoto(null, 'Foto rimossa'); });
+    disegnaFoto();
+
     var f = document.getElementById('f-profilo');
     f.nome.value = io.nome || ''; f.telefono.value = io.telefono || ''; f.fase.value = io.fase || ''; f.obiettivo.value = io.obiettivo || '';
     f.addEventListener('submit', async function (e) {
