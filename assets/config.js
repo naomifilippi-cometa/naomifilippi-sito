@@ -8,9 +8,14 @@
   (Row Level Security) create con supabase/setup.sql.
 */
 window.NF_CONFIG = {
-  SUPABASE_URL: "",          // es. "https://abcdefgh.supabase.co"
-  SUPABASE_ANON_KEY: "",     // es. "eyJhbGciOi..."
+  SUPABASE_URL: "https://xyzypsievzmrxhpuorzz.supabase.co",          // es. "https://abcdefgh.supabase.co"
+  SUPABASE_ANON_KEY: "sb_publishable_2jT8hdyOR5l5wOYrHYjjtQ_Lu7gvrz7",     // es. "eyJhbGciOi..."
   SITE_URL: "https://naomifilippi.it",
+
+  // Metodi di accesso attivi. Metti true solo dopo aver configurato Google e LinkedIn su Supabase
+  // (GUIDA-SETUP, passi 4 e 5): finché sono false la pagina Accedi mostra solo il link via email.
+  ACCESSO_GOOGLE: false,
+  ACCESSO_LINKEDIN: false,
 
   // Contatti
   WHATSAPP: "393887528320",  // numero in formato internazionale, senza + e senza spazi

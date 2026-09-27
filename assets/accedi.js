@@ -27,6 +27,13 @@
   if (q.get('uscito')) avviso('Sei uscito dal tuo account. A presto!');
   if (q.get('errore')) avviso(q.get('errore').slice(0, 200), true);
 
+  // nascondi i pulsanti dei provider non ancora configurati su Supabase
+  var CFG = window.NF_CONFIG || {};
+  if (NF.live) {
+    var spenti = { google: CFG.ACCESSO_GOOGLE === false, linkedin_oidc: CFG.ACCESSO_LINKEDIN === false }, rimasti = 0;
+    document.querySelectorAll('[data-provider]').forEach(function (b) { if (spenti[b.getAttribute('data-provider')]) b.hidden = true; else rimasti++; });
+    if (!rimasti) { var pl = document.querySelector('.provider-lista'), op = document.querySelector('.oppure'); if (pl) pl.hidden = true; if (op) op.hidden = true; }
+  }
   // modalità demo: nessun collegamento reale a Google o LinkedIn
   if (!NF.live) document.querySelector('.demo-nota').hidden = false;
 
