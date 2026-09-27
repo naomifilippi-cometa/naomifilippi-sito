@@ -333,5 +333,5 @@ end $$;
 -- 12. ULTIMO PASSO: l'email con cui Naomi accede diventa amministratrice.
 --     Sostituisci l'indirizzo qui sotto e riesegui solo questa riga.
 -- ---------------------------------------------------------------------
-insert into public.admins (email) values (lower('naomi.filippi1995@gmail.com'))
+insert into public.admins (email) values (lower('hello@naomifilippi.it'))
 on conflict do nothing;

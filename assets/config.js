@@ -20,7 +20,7 @@ window.NF_CONFIG = {
   // Contatti
   WHATSAPP: "393887528320",  // numero in formato internazionale, senza + e senza spazi
   WHATSAPP_TESTO: "Ciao Naomi, ti scrivo dal tuo sito: vorrei informazioni sulla consulenza di carriera.",
-  EMAIL: "",                 // es. "info@naomifilippi.it"
+  EMAIL: "hello@naomifilippi.it",
 
   // Prenotazioni: incolla il link del tuo calendario Calendly o Cal.com (facoltativo)
   CALENDARIO_URL: "",        // es. "https://cal.com/naomifilippi/call-conoscitiva"

@@ -45,7 +45,7 @@ Tempo stimato: 60–90 minuti, da fare con calma una volta sola.
 
 1. In Supabase apri **SQL Editor → New query**.
 2. Apri il file `supabase/setup.sql`, copia tutto e incollalo.
-3. **Controlla l'ultima riga**: deve contenere l'email con cui Naomi accederà alla dashboard (ora c'è `naomi.filippi1995@gmail.com`). Se usa un altro indirizzo, cambialo.
+3. **Controlla l'ultima riga**: deve contenere l'email con cui Naomi accederà alla dashboard (ora c'è `hello@naomifilippi.it`). Se usa un altro indirizzo, cambialo.
 4. Clicca **Run**. Deve comparire "Success".
 
 Lo script crea:
