@@ -34,6 +34,19 @@
     document.querySelectorAll('[data-provider]').forEach(function (b) { if (spenti[b.getAttribute('data-provider')]) b.hidden = true; else rimasti++; });
     if (!rimasti) { var pl = document.querySelector('.provider-lista'), op = document.querySelector('.oppure'); if (pl) pl.hidden = true; if (op) op.hidden = true; }
   }
+  // ricorda com'è entrata la persona l'ultima volta: al ritorno quel pulsante è in evidenza
+  var ULT = 'nf-ultimo-accesso';
+  function ricorda(v) { try { localStorage.setItem(ULT, JSON.stringify(v)); } catch (e) { } }
+  try {
+    var u = JSON.parse(localStorage.getItem(ULT) || 'null');
+    if (u && u.provider) {
+      var bu = document.querySelector('[data-provider="' + u.provider + '"]');
+      if (bu && !bu.hidden) {
+        bu.classList.add('ultimo'); bu.parentNode.insertBefore(bu, bu.parentNode.firstChild);
+        var tag = document.createElement('small'); tag.className = 'ultimo-tag'; tag.textContent = 'Usato l\'ultima volta'; bu.appendChild(tag);
+      }
+    } else if (u && u.email) campo.value = u.email;
+  } catch (e) { }
   // modalità demo: nessun collegamento reale a Google o LinkedIn
   if (!NF.live) document.querySelector('.demo-nota').hidden = false;
 
@@ -42,7 +55,7 @@
 
   document.querySelectorAll('[data-provider]').forEach(function (b) {
     b.addEventListener('click', async function () {
-      avviso(''); occupato(b, true);
+      avviso(''); occupato(b, true); ricorda({ provider: b.getAttribute('data-provider') });
       var r = await NF.accedi(b.getAttribute('data-provider'), 'cliente');
       if (r.errore) { occupato(b, false); return avviso('Accesso non riuscito: ' + r.errore, true); }
       if (r.demo) avanti(r.demo); // nella versione reale il browser va già su Google o LinkedIn
@@ -59,7 +72,7 @@
       campo.classList.remove('errore'); campo.offsetWidth; campo.classList.add('errore'); campo.setAttribute('aria-invalid', 'true'); campo.focus();
       return avviso('Controlla l\'indirizzo email: sembra incompleto.', true);
     }
-    occupato(invio, true);
+    occupato(invio, true); ricorda({ email: email });
     var ruolo = /(^|[.@])naomi/i.test(email) ? 'admin' : 'cliente'; // conta solo in demo
     var r = await NF.accediEmail(email, ruolo);
     occupato(invio, false);

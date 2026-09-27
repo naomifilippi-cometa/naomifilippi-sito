@@ -118,3 +118,8 @@ body.pagina-accedi{background:var(--avorio);min-height:100svh}
 .passaggio p{color:var(--testo-2)}
 .passaggio .btn-ghost{border-color:var(--linea);color:var(--testo)}
 @media (prefers-reduced-motion:reduce){.acc-voci figure{transition:none}.busta path,.busta rect{stroke-dashoffset:0}.busta circle{transform:none}}
+
+/* metodo usato l'ultima volta */
+.provider-lista [data-provider]{position:relative}
+.provider-lista .ultimo{box-shadow:0 0 0 2px rgba(242,154,198,.55),0 8px 24px -10px rgba(214,51,132,.6)}
+.ultimo-tag{position:absolute;top:-9px;right:12px;font-family:inherit;font-weight:600;font-size:11px;line-height:1;letter-spacing:.02em;padding:4px 8px;border-radius:99px;background:#F29AC6;color:#2A0F1E;pointer-events:none}
