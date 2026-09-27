@@ -151,8 +151,6 @@
         ctx.beginPath(); ctx.arc(x,y,l.r,0,6.283); ctx.fill();
       }
     });
-    ctx.setLineDash([2,7]); ctx.strokeStyle='rgba(111,195,195,.22)'; ctx.lineWidth=1;
-    ctx.beginPath(); for (var i=0;i<=60;i++){ var q=pt(i/60); i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);} ctx.stroke(); ctx.setLineDash([]);
     /* la cometa: coda che sfuma dal teal al rosa, scintille dietro la testa */
     var head = reduce ? .72 : Math.min(1.08, (time % 12) / 9);
     var fade = reduce ? 1 : Math.min(1, Math.max(0, (12 - (time % 12)) / 1.5));
@@ -164,13 +162,6 @@
       ctx.strokeStyle = 'rgba('+Math.round(111+131*k)+','+Math.round(195-41*k)+','+Math.round(195+3*k)+','+(k*k*.95*fade)+')';
       ctx.lineWidth = .8 + 4.2*k*k; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(a0.x,a0.y); ctx.lineTo(b0.x,b0.y); ctx.stroke();
-    }
-    for (var q2=0;q2<16;q2++){
-      var tt = head - .012*(q2+1) - .004*Math.sin(q2*7.3);
-      if (tt <= 0 || tt >= 1) continue;
-      var sp = pt(tt), off = Math.sin(time*4 + q2*1.7)*(4 + q2*.9), sa = (1 - q2/16)*.8*fade;
-      ctx.fillStyle = 'rgba(255,236,246,'+sa+')';
-      ctx.beginPath(); ctx.arc(sp.x + off*.6, sp.y + off, 1.1 + (q2%3)*.4, 0, 6.283); ctx.fill();
     }
     if (head <= 1){
       var h = pt(head), pulse = reduce ? 1 : (.9 + .1*Math.sin(time*3));
