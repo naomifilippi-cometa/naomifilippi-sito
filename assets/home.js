@@ -77,18 +77,22 @@
   ral.addEventListener('input', calc); pct.addEventListener('input', calc); calc();
   }
 
-  /* ---------- metodo: progresso allo scroll ---------- */
+  /* ---------- metodo: la linea si disegna una volta quando la sezione entra nello schermo ---------- */
   var tappe = document.getElementById('tappe');
   if (tappe) {
-  var items = tappe.querySelectorAll('.tappa');
-  function prog(){
-    var r = tappe.getBoundingClientRect(), vh = innerHeight;
-    var p = Math.min(1, Math.max(0, (vh*0.8 - r.top) / (r.height + vh*0.35)));
-    if (reduce) p = 1;
-    tappe.style.setProperty('--p', p.toFixed(3));
-    items.forEach(function(it,i){ it.classList.toggle('on', p >= (i/items.length) + 0.02 || p===1); });
-  }
-  addEventListener('scroll', prog, {passive:true}); addEventListener('resize', prog); prog();
+    var items = tappe.querySelectorAll('.tappa');
+    var accendi = function(){
+      if (tappe.classList.contains('vai')) return;
+      tappe.classList.add('vai');
+      tappe.style.setProperty('--p', 1);
+      items.forEach(function(it,i){ setTimeout(function(){ it.classList.add('on'); }, reduce ? 0 : 60 + i*525); });
+    };
+    if (reduce || !('IntersectionObserver' in window)) accendi();
+    else {
+      var oss = new IntersectionObserver(function(v){ if (v[0].isIntersecting){ oss.disconnect(); accendi(); } }, {threshold:.45});
+      var parti2 = function(){ oss.observe(tappe); };
+      if (document.prerendering) document.addEventListener('prerenderingchange', parti2, {once:true}); else parti2();
+    }
   }
 
   /* ---------- form ---------- */

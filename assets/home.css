@@ -178,7 +178,7 @@ p{margin:0}
 .tappe{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;--p:0}
 .tappe::before,.tappe::after{content:"";position:absolute;left:0;top:13px;height:2px;border-radius:2px}
 .tappe::before{right:0;background:rgba(243,234,240,.18)}
-.tappe::after{width:calc(var(--p) * 100%);background:linear-gradient(90deg,var(--teal-chiaro),var(--lume));box-shadow:0 0 14px var(--lume);transition:width .2s linear}
+.tappe::after{width:calc(var(--p) * 100%);background:linear-gradient(90deg,var(--teal-chiaro),var(--lume));box-shadow:0 0 14px var(--lume);transition:width 2.1s linear,height 2.1s linear}
 .tappa{position:relative;display:grid;gap:12px;padding-top:44px}
 .tappa .dot{position:absolute;top:4px;left:0;width:20px;height:20px;border-radius:50%;background:var(--petrolio);border:2px solid var(--teal-chiaro);transition:all .4s}
 .tappa.on .dot{background:var(--lume);border-color:var(--lume-chiaro);box-shadow:0 0 0 6px rgba(214,51,132,.18),0 0 22px var(--lume)}
@@ -374,3 +374,11 @@ tr.hl td small{font-weight:400}
   html{scroll-behavior:auto}
 }
 .tab,.seg button,.fase-pick .btn,.btn{min-height:44px}
+
+/* metodo: ogni tappa si accende quando la linea la raggiunge */
+.tappa .k,.tappa h3,.tappa p{transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.tappa h3{transition-delay:.06s}.tappa p{transition-delay:.12s}
+.js .tappa:not(.on) .k,.js .tappa:not(.on) h3,.js .tappa:not(.on) p{opacity:.3;transform:translateY(10px)}
+.tappa.on .dot{animation:tappa-pop .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes tappa-pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:none}}
+@media (prefers-reduced-motion: reduce){.js .tappa:not(.on) .k,.js .tappa:not(.on) h3,.js .tappa:not(.on) p{opacity:1;transform:none}}

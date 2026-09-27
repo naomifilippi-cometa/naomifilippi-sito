@@ -219,7 +219,7 @@ html.menu-aperto{overflow:hidden}
 /* ================= comparsa allo scroll (senza JavaScript) ================= */
 @supports (animation-timeline:view()){
   @media (prefers-reduced-motion:no-preference){
-    .sez-head,.grid-servizi .srv,.bundle,.griglia > *,.passi li,.lista-tappe > li,.carta,.in-evidenza > *,.tappa,.chi .percorso li,.cred span,
+    .sez-head,.grid-servizi .srv,.bundle,.griglia > *,.passi li,.lista-tappe > li,.carta,.in-evidenza > *,.chi .percorso li,.cred span,
     .faq details,.listino,.punteggio,.valori > *,.muro .rec,.calc,.fase-panel,.timeline li,.cta-fine .wrap > *{
       animation:rivela linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
     @keyframes rivela{from{opacity:0;transform:translateY(30px)}}
