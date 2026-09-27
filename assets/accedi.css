@@ -71,11 +71,45 @@ body.pagina-accedi{background:var(--avorio);min-height:100svh}
 
 .oppure{display:flex;align-items:center;gap:12px;color:var(--inchiostro-2);font-size:.82rem}
 .oppure::before,.oppure::after{content:"";flex:1;height:1px;background:var(--linea-chiara)}
-#f-email{display:grid;gap:10px}
-#f-email .btn{width:100%;min-height:50px;position:relative}
-#f-email .btn .spin{display:none;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:gira .8s linear infinite}
-#f-email .btn[aria-busy="true"] .spin{display:inline-block}
-#f-email .btn[aria-busy="true"] .t{opacity:.7}
+/* schede Accedi / Registrati */
+.schede{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:999px;background:rgba(58,20,48,.06);border:1px solid var(--linea-chiara)}
+.schede button{position:relative;z-index:1;min-height:44px;border:0;background:none;border-radius:999px;font:600 .95rem var(--f-body);color:var(--inchiostro-2);cursor:pointer;transition:color .35s var(--ease-out)}
+.schede button[aria-selected="true"]{color:#fff}
+.schede button:focus-visible{outline:2px solid var(--lume-chiaro);outline-offset:2px}
+.schede-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:linear-gradient(135deg,var(--magenta),#A8246A);box-shadow:0 8px 20px -10px rgba(214,51,132,.8);transition:transform .5s var(--ease-molla)}
+.schede.su-reg .schede-ind{transform:translateX(100%)}
+
+/* moduli */
+.f-acc{display:grid;gap:12px}
+.f-acc[hidden]{display:none}
+.f-acc .btn{width:100%;min-height:50px;position:relative;margin-top:4px}
+.f-acc .btn .spin{display:none;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:gira .8s linear infinite}
+.f-acc .btn[aria-busy="true"] .spin{display:inline-block}
+.f-acc .btn[aria-busy="true"] .t{opacity:.7}
+.pw{position:relative;display:block}
+.pw input{padding-right:52px}
+.occhio{position:absolute;top:50%;right:4px;transform:translateY(-50%);width:44px;height:44px;display:grid;place-items:center;border:0;background:none;border-radius:8px;color:var(--inchiostro-2);cursor:pointer}
+.occhio:hover{color:var(--magenta)}
+.occhio svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.occhio .barra{stroke-dasharray:23;stroke-dashoffset:23;transition:stroke-dashoffset .3s var(--ease-out)}
+.occhio[aria-pressed="true"] .barra{stroke-dashoffset:0}
+.riga-link{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;margin-top:-4px}
+.link{border:0;background:none;padding:0;min-height:36px;font:600 .86rem var(--f-body);color:var(--magenta);cursor:pointer;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;transition:text-decoration-color .2s}
+.link:hover{text-decoration-color:currentColor}
+.link[aria-busy="true"]{opacity:.6;pointer-events:none}
+.forza{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:-4px}
+.forza i{height:4px;border-radius:4px;background:var(--linea-chiara);transition:background-color .35s,transform .35s var(--ease-molla);transform-origin:left}
+.forza[data-livello="1"] i:nth-child(-n+1){background:var(--errore)}
+.forza[data-livello="2"] i:nth-child(-n+2){background:var(--attenzione)}
+.forza[data-livello="3"] i:nth-child(-n+3){background:var(--teal)}
+.forza[data-livello="4"] i{background:var(--ok)}
+.forza-t{font-size:.8rem;color:var(--inchiostro-2);margin-top:-6px}
+.spunta{display:flex;align-items:flex-start;gap:10px;font-size:.86rem;color:var(--inchiostro-2);cursor:pointer;padding:4px 0}
+.spunta input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:var(--magenta)}
+.spunta.errore{animation:scuoti .4s var(--ease-out)}
+.spunta.errore span{color:var(--errore)}
+.stato-nuova h2{font-size:clamp(1.9rem,3.6vw,2.5rem);font-weight:400;line-height:1.1}
+.stato-nuova h2 em{color:var(--magenta)}
 .campo input.errore{border-color:var(--errore);animation:scuoti .4s var(--ease-out)}
 @keyframes scuoti{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .acc-card .esito{margin:0}

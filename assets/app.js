@@ -116,6 +116,21 @@
   // =====================================================================
   //  API comune
   // =====================================================================
+  // messaggi di Supabase Auth in italiano
+  function erroreIt(e) {
+    var m = (e && (e.message || e)) + '', c = e && e.code;
+    if (c === 'invalid_credentials' || /invalid login credentials/i.test(m)) return 'Email o password non corretti.';
+    if (c === 'email_not_confirmed' || /email not confirmed/i.test(m)) return 'Prima conferma la tua email: apri il link che ti ho mandato (guarda anche nello spam).';
+    if (c === 'user_already_exists' || /already registered|already exists/i.test(m)) return 'Esiste già un account con questa email. Accedi, oppure usa "Password dimenticata?".';
+    if (c === 'weak_password' || /password should|weak password/i.test(m)) return 'La password è troppo debole: usa almeno 8 caratteri con lettere e numeri.';
+    if (c === 'same_password' || /different from the old/i.test(m)) return 'La nuova password deve essere diversa da quella di prima.';
+    if (c === 'over_email_send_rate_limit' || /rate limit|too many/i.test(m)) return 'Troppe richieste in poco tempo: riprova tra qualche minuto.';
+    if (/security purposes.*after (\d+) seconds/i.test(m)) return 'Per sicurezza aspetta ' + m.match(/after (\d+) seconds/i)[1] + ' secondi e riprova.';
+    if (c === 'signup_disabled' || /signups not allowed/i.test(m)) return 'Le nuove registrazioni sono chiuse al momento.';
+    if (c === 'email_address_invalid' || /invalid.*email|email.*invalid/i.test(m)) return 'Questo indirizzo email non è valido.';
+    if (/fetch|network/i.test(m)) return 'Connessione assente o instabile: riprova.';
+    return m;
+  }
   var NF = {
     live: LIVE, pagina: pagina, esc: esc, peso: peso, quando: quando, iniziali: iniziali, waLink: waLink, controllaFile: controllaFile,
     fmtData: fmtData, fmtDataOra: fmtDataOra, CATEGORIE: CATEGORIE, STATI: STATI, TAPPE: TAPPE, FASI: FASI, SERVIZI: SERVIZI, NAOMI: NAOMI,
@@ -129,13 +144,46 @@
     accedi: async function (provider, ruoloDemo) {
       if (!LIVE) { var ruolo = ruoloDemo === 'admin' ? 'admin' : 'cliente'; demo.utente = UTENTI_DEMO[ruolo]; salvaDemo(ruolo); return { ok: true, demo: ruolo }; }
       var r = await sb.auth.signInWithOAuth({ provider: provider, options: { redirectTo: urlAssoluto('auth-callback') } });
-      return r.error ? { errore: r.error.message } : { ok: true };
+      return r.error ? { errore: erroreIt(r.error) } : { ok: true };
     },
     accediEmail: async function (email, ruoloDemo) {
       if (!LIVE) return NF.accedi('email', ruoloDemo);
       var r = await sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: urlAssoluto('auth-callback') } });
-      return r.error ? { errore: r.error.message } : { inviata: true };
+      return r.error ? { errore: erroreIt(r.error) } : { inviata: true };
     },
+    // email e password
+    accediPassword: async function (email, password, ruoloDemo) {
+      if (!LIVE) return NF.accedi('email', ruoloDemo);
+      var r = await sb.auth.signInWithPassword({ email: email, password: password });
+      return r.error ? { errore: erroreIt(r.error) } : { ok: true };
+    },
+    registrati: async function (nome, email, password) {
+      if (!LIVE) return NF.accedi('email', 'cliente');
+      var r = await sb.auth.signUp({ email: email, password: password, options: { data: { full_name: nome, name: nome }, emailRedirectTo: urlAssoluto('auth-callback') } });
+      if (r.error) return { errore: erroreIt(r.error) };
+      if (r.data.session) return { ok: true };
+      // con la conferma email attiva, un indirizzo già registrato torna senza identità
+      if (r.data.user && r.data.user.identities && r.data.user.identities.length === 0) return { errore: 'Esiste già un account con questa email. Accedi, oppure usa "Password dimenticata?".', esiste: true };
+      return { conferma: true };
+    },
+    reinviaConferma: async function (email) {
+      if (!LIVE) return { inviata: true };
+      var r = await sb.auth.resend({ type: 'signup', email: email, options: { emailRedirectTo: urlAssoluto('auth-callback') } });
+      return r.error ? { errore: erroreIt(r.error) } : { inviata: true };
+    },
+    recuperaPassword: async function (email) {
+      if (!LIVE) return { inviata: true };
+      try { localStorage.setItem('nf-recupero', String(Date.now())); } catch (e) { }
+      var r = await sb.auth.resetPasswordForEmail(email, { redirectTo: urlAssoluto('auth-callback') });
+      return r.error ? { errore: erroreIt(r.error) } : { inviata: true };
+    },
+    nuovaPassword: async function (password) {
+      if (!LIVE) return { ok: true };
+      var r = await sb.auth.updateUser({ password: password });
+      try { localStorage.removeItem('nf-recupero'); } catch (e) { }
+      return r.error ? { errore: erroreIt(r.error) } : { ok: true };
+    },
+    erroreIt: function (e) { return erroreIt(e); },
     esci: async function () { if (!LIVE) { demo.utente = null; salvaDemo(null); return; } await sb.auth.signOut(); },
     vaiAdAccedi: function (query) { location.replace(pagina('accedi', query)); },
     alCambioAccesso: function (cb) { if (LIVE) sb.auth.onAuthStateChange(function (ev) { cb(ev); }); },

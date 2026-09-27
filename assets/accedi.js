@@ -1,9 +1,12 @@
-/* Pagina di accesso: Google, LinkedIn o link via email. Dopo il login si passa da auth-callback, che smista per ruolo. */
+/* Pagina di accesso: email e password (accesso e registrazione), Google, LinkedIn o link via email.
+   Dopo il login si passa da auth-callback, che smista per ruolo. Il recupero password torna qui con ?nuova=1. */
 (function () {
   var NF = window.NF, riduci = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var card = document.querySelector('.acc-card');
-  var stati = { scegli: document.querySelector('.stato-scegli'), inviata: document.querySelector('.stato-inviata'), dentro: document.querySelector('.stato-dentro') };
-  var esito = document.getElementById('acc-esito'), campo = document.getElementById('acc-email');
+  var $ = function (id) { return document.getElementById(id); };
+  var stati = { scegli: document.querySelector('.stato-scegli'), inviata: document.querySelector('.stato-inviata'), nuova: document.querySelector('.stato-nuova'), dentro: document.querySelector('.stato-dentro') };
+  var esito = $('acc-esito'), campo = $('acc-email'), pw = $('acc-pw');
+  var fAcc = $('f-accedi'), fReg = $('f-registrati');
+  var EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   function mostraStato(nome) {
     var cambia = function () {
@@ -13,14 +16,25 @@
     };
     if (document.startViewTransition && !riduci) document.startViewTransition(cambia); else cambia();
   }
-  function avviso(testo, errore) {
-    esito.hidden = !testo; esito.className = 'esito ' + (errore ? 'ko' : 'ok'); esito.textContent = testo || '';
+  function avviso(testo, errore, dove) {
+    var e = dove || esito;
+    e.hidden = !testo; e.className = 'esito ' + (errore ? 'ko' : 'ok'); e.textContent = testo || '';
   }
   function occupato(b, si) { if (si) b.setAttribute('aria-busy', 'true'); else b.removeAttribute('aria-busy'); b.disabled = !!si; }
+  function sbagliato(input, testo, dove) {
+    input.classList.remove('errore'); input.offsetWidth; input.classList.add('errore'); input.setAttribute('aria-invalid', 'true'); input.focus();
+    avviso(testo, true, dove); return false;
+  }
+  document.querySelectorAll('.f-acc input').forEach(function (i) { i.addEventListener('input', function () { i.classList.remove('errore'); i.removeAttribute('aria-invalid'); }); });
   function avanti(ruoloDemo) {
     mostraStato('dentro');
     setTimeout(function () { location.replace(NF.pagina('auth-callback', ruoloDemo ? 'demo=' + ruoloDemo : '')); }, riduci ? 0 : 450);
   }
+  function ruoloDemo(email) { return /(^|[.@])naomi/i.test(email) ? 'admin' : 'cliente'; } // conta solo in demo
+
+  // ricorda com'è entrata la persona l'ultima volta
+  var ULT = 'nf-ultimo-accesso';
+  function ricorda(v) { try { localStorage.setItem(ULT, JSON.stringify(v)); localStorage.removeItem('nf-recupero'); } catch (e) { } }
 
   // messaggi arrivati da altre pagine
   var q = new URLSearchParams(location.search);
@@ -34,9 +48,37 @@
     document.querySelectorAll('[data-provider]').forEach(function (b) { if (spenti[b.getAttribute('data-provider')]) b.hidden = true; else rimasti++; });
     if (!rimasti) { var pl = document.querySelector('.provider-lista'), op = document.querySelector('.oppure'); if (pl) pl.hidden = true; if (op) op.hidden = true; }
   }
-  // ricorda com'è entrata la persona l'ultima volta: al ritorno quel pulsante è in evidenza
-  var ULT = 'nf-ultimo-accesso';
-  function ricorda(v) { try { localStorage.setItem(ULT, JSON.stringify(v)); } catch (e) { } }
+  if (!NF.live) document.querySelector('.demo-nota').hidden = false;
+
+  // ---------- schede Accedi / Registrati ----------
+  var tabA = $('tab-accedi'), tabR = $('tab-registrati'), titolo = $('acc-titolo'), lead = $('acc-lead');
+  var TESTI = {
+    accedi: ['Accedi al tuo <em>spazio</em>', 'Documenti, messaggi con Naomi e tappe del tuo percorso, in un posto solo.'],
+    registrati: ['Crea il tuo <em>spazio</em>', 'Un account per seguire il tuo percorso con Naomi: documenti, messaggi e appuntamenti.']
+  };
+  function scheda(nome, fuoco) {
+    var reg = nome === 'registrati';
+    var cambia = function () {
+      tabA.setAttribute('aria-selected', String(!reg)); tabR.setAttribute('aria-selected', String(reg));
+      tabA.tabIndex = reg ? -1 : 0; tabR.tabIndex = reg ? 0 : -1;
+      fAcc.hidden = reg; fReg.hidden = !reg;
+      document.querySelector('.schede').classList.toggle('su-reg', reg);
+      titolo.innerHTML = TESTI[nome][0]; lead.textContent = TESTI[nome][1];
+      avviso('');
+      if (fuoco) (reg ? $('reg-nome') : campo).focus({ preventScroll: true });
+    };
+    if (document.startViewTransition && !riduci && fuoco !== undefined) document.startViewTransition(cambia); else cambia();
+    try { history.replaceState(null, '', location.pathname + (reg ? '?registrati=1' : '')); } catch (e) { }
+  }
+  tabA.addEventListener('click', function () { scheda('accedi', false); });
+  tabR.addEventListener('click', function () { scheda('registrati', false); });
+  [tabA, tabR].forEach(function (t) {
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); var altro = t === tabA ? tabR : tabA; altro.click(); altro.focus(); }
+    });
+  });
+
+  // apertura: ?registrati apre la registrazione, altrimenti si riparte dall'ultimo metodo usato
   try {
     var u = JSON.parse(localStorage.getItem(ULT) || 'null');
     if (u && u.provider) {
@@ -47,12 +89,36 @@
       }
     } else if (u && u.email) campo.value = u.email;
   } catch (e) { }
-  // modalità demo: nessun collegamento reale a Google o LinkedIn
-  if (!NF.live) document.querySelector('.demo-nota').hidden = false;
+  if (q.has('registrati')) scheda('registrati');
 
-  // se la sessione c'è già, niente modulo: si entra
-  NF.sessione().then(function (s) { if (s) avanti(NF.live ? '' : (s.user.admin ? 'admin' : 'cliente')); });
+  // ---------- mostra / nascondi password ----------
+  document.querySelectorAll('.occhio').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = b.parentNode.querySelector('input'), vedi = i.type === 'password';
+      i.type = vedi ? 'text' : 'password';
+      b.setAttribute('aria-pressed', String(vedi)); b.setAttribute('aria-label', vedi ? 'Nascondi la password' : 'Mostra la password');
+      i.focus();
+    });
+  });
 
+  // ---------- robustezza della password ----------
+  function forza(v) {
+    if (!v) return 0;
+    var p = 0;
+    if (v.length >= 8) p++;
+    if (v.length >= 12) p++;
+    if (/[a-z]/i.test(v) && /\d/.test(v)) p++;
+    if (/[^a-z0-9]/i.test(v) || (/[a-z]/.test(v) && /[A-Z]/.test(v))) p++;
+    return v.length < 8 ? 1 : Math.max(1, Math.min(4, p));
+  }
+  var FRASI = ['Almeno 8 caratteri. Meglio se con lettere, numeri e un simbolo.', 'Troppo corta: servono almeno 8 caratteri.', 'Accettabile, ma si può fare di meglio.', 'Buona password.', 'Ottima password.'];
+  function misuratore(input) {
+    var box = input.closest('.f-acc').querySelector('.forza'), t = input.closest('.f-acc').querySelector('.forza-t');
+    input.addEventListener('input', function () { var l = forza(input.value); box.setAttribute('data-livello', l); t.textContent = FRASI[l]; });
+  }
+  misuratore($('reg-pw')); misuratore($('nuova-pw'));
+
+  // ---------- Google / LinkedIn ----------
   document.querySelectorAll('[data-provider]').forEach(function (b) {
     b.addEventListener('click', async function () {
       avviso(''); occupato(b, true); ricorda({ provider: b.getAttribute('data-provider') });
@@ -63,38 +129,121 @@
     });
   });
 
-  var form = document.getElementById('f-email'), invio = form.querySelector('button[type=submit]'), timer = null;
-  campo.addEventListener('input', function () { campo.classList.remove('errore'); campo.removeAttribute('aria-invalid'); });
-  form.addEventListener('submit', async function (e) {
+  // ---------- accesso con email e password ----------
+  fAcc.addEventListener('submit', async function (e) {
     e.preventDefault(); avviso('');
-    var email = campo.value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-      campo.classList.remove('errore'); campo.offsetWidth; campo.classList.add('errore'); campo.setAttribute('aria-invalid', 'true'); campo.focus();
-      return avviso('Controlla l\'indirizzo email: sembra incompleto.', true);
-    }
-    occupato(invio, true); ricorda({ email: email });
-    var ruolo = /(^|[.@])naomi/i.test(email) ? 'admin' : 'cliente'; // conta solo in demo
-    var r = await NF.accediEmail(email, ruolo);
+    var email = campo.value.trim(), invio = fAcc.querySelector('button[type=submit]');
+    if (!EMAIL_OK.test(email)) return sbagliato(campo, 'Controlla l\'indirizzo email: sembra incompleto.');
+    if (!pw.value) return sbagliato(pw, 'Scrivi la password. Se non l\'hai mai impostata usa "Password dimenticata?" o il link via email.');
+    occupato(invio, true);
+    var r = await NF.accediPassword(email, pw.value, ruoloDemo(email));
     occupato(invio, false);
-    if (r.errore) return avviso('Invio non riuscito: ' + r.errore, true);
-    if (r.demo) return avanti(r.demo);
-    document.getElementById('email-inviata').textContent = email;
-    mostraStato('inviata'); contoRovescia();
+    if (r.errore) { if (/non corretti/.test(r.errore)) { pw.select(); } return avviso(r.errore, true); }
+    ricorda({ email: email });
+    avanti(r.demo);
   });
 
-  var reinvia = document.getElementById('reinvia');
+  // ---------- registrazione ----------
+  fReg.addEventListener('submit', async function (e) {
+    e.preventDefault(); avviso('');
+    var nome = $('reg-nome'), em = $('reg-email'), p = $('reg-pw'), ok = $('reg-ok'), invio = fReg.querySelector('button[type=submit]');
+    if (nome.value.trim().length < 2) return sbagliato(nome, 'Scrivi il tuo nome e cognome.');
+    if (!EMAIL_OK.test(em.value.trim())) return sbagliato(em, 'Controlla l\'indirizzo email: sembra incompleto.');
+    if (p.value.length < 8) return sbagliato(p, 'La password deve avere almeno 8 caratteri.');
+    if (!ok.checked) { ok.focus(); ok.closest('.spunta').classList.remove('errore'); ok.closest('.spunta').offsetWidth; ok.closest('.spunta').classList.add('errore'); return avviso('Per creare l\'account serve accettare termini e informativa privacy.', true); }
+    occupato(invio, true);
+    var email = em.value.trim();
+    var r = await NF.registrati(nome.value.trim(), email, p.value);
+    occupato(invio, false);
+    if (r.errore) {
+      avviso(r.errore, true);
+      if (r.esiste) { campo.value = email; setTimeout(function () { scheda('accedi', true); avviso('Hai già un account con questa email: inserisci la password per entrare.'); }, 1400); }
+      return;
+    }
+    ricorda({ email: email });
+    if (r.conferma) return inviata('conferma', email);
+    avanti(r.demo);
+  });
+
+  // ---------- link via email e password dimenticata ----------
+  function emailPerLink() {
+    var email = campo.value.trim();
+    if (!EMAIL_OK.test(email)) { sbagliato(campo, 'Scrivi qui sopra la tua email, poi riprova.'); return null; }
+    return email;
+  }
+  $('link-magico').addEventListener('click', async function () {
+    avviso(''); var email = emailPerLink(); if (!email) return;
+    var b = this; occupato(b, true);
+    var r = await NF.accediEmail(email, ruoloDemo(email));
+    occupato(b, false);
+    if (r.errore) return avviso('Invio non riuscito: ' + r.errore, true);
+    ricorda({ email: email });
+    if (r.demo) return avanti(r.demo);
+    inviata('link', email);
+  });
+  $('dimenticata').addEventListener('click', async function () {
+    avviso(''); var email = emailPerLink(); if (!email) return;
+    var b = this; occupato(b, true);
+    var r = await NF.recuperaPassword(email);
+    occupato(b, false);
+    if (r.errore) return avviso('Invio non riuscito: ' + r.errore, true);
+    inviata('recupero', email);
+  });
+
+  // ---------- schermata "controlla la tua email" ----------
+  var reinvia = $('reinvia'), timer = null, modo = 'link', emailInviata = '';
+  var INVIATA = {
+    link: ['Controlla la tua email', 'Ti ho mandato un link di accesso a <b></b>. Vale per poco tempo e una sola volta.'],
+    conferma: ['Conferma la tua email', 'Ho creato il tuo account. Per attivarlo apri il link di conferma che ti ho mandato a <b></b>: entrerai direttamente nella tua area.'],
+    recupero: ['Reimposta la password', 'Se esiste un account con <b></b>, riceverai un link per scegliere una nuova password.']
+  };
+  function inviata(m, email) {
+    modo = m; emailInviata = email;
+    $('inviata-titolo').textContent = INVIATA[m][0];
+    var t = $('inviata-testo'); t.innerHTML = INVIATA[m][1]; t.querySelector('b').textContent = email;
+    mostraStato('inviata'); contoRovescia();
+  }
   function contoRovescia() {
     var n = 60; reinvia.disabled = true; clearInterval(timer);
-    var scrivi = function () { reinvia.textContent = n > 0 ? 'Reinvia tra ' + n + ' s' : 'Reinvia il link'; };
+    var scrivi = function () { reinvia.textContent = n > 0 ? 'Reinvia tra ' + n + ' s' : 'Reinvia l\'email'; };
     scrivi();
     timer = setInterval(function () { n--; scrivi(); if (n <= 0) { clearInterval(timer); reinvia.disabled = false; } }, 1000);
   }
   reinvia.addEventListener('click', async function () {
-    var r = await NF.accediEmail(campo.value.trim());
+    var r = modo === 'conferma' ? await NF.reinviaConferma(emailInviata) : modo === 'recupero' ? await NF.recuperaPassword(emailInviata) : await NF.accediEmail(emailInviata);
     if (r.errore) { mostraStato('scegli'); return avviso('Invio non riuscito: ' + r.errore, true); }
     contoRovescia();
   });
-  document.getElementById('cambia').addEventListener('click', function () { clearInterval(timer); mostraStato('scegli'); setTimeout(function () { campo.select(); }, 60); });
+  $('cambia').addEventListener('click', function () {
+    clearInterval(timer);
+    if (modo === 'conferma') { campo.value = emailInviata; scheda('accedi'); }
+    mostraStato('scegli'); setTimeout(function () { (modo === 'conferma' ? pw : campo).focus(); }, 60);
+  });
+
+  // ---------- nuova password (arrivo dal link di recupero) ----------
+  var fNuova = $('f-nuova'), esitoN = $('nuova-esito');
+  fNuova.addEventListener('submit', async function (e) {
+    e.preventDefault(); avviso('', false, esitoN);
+    var p1 = $('nuova-pw'), p2 = $('nuova-pw2'), invio = fNuova.querySelector('button[type=submit]');
+    if (p1.value.length < 8) return sbagliato(p1, 'La password deve avere almeno 8 caratteri.', esitoN);
+    if (p1.value !== p2.value) return sbagliato(p2, 'Le due password non coincidono.', esitoN);
+    occupato(invio, true);
+    var r = await NF.nuovaPassword(p1.value);
+    occupato(invio, false);
+    if (r.errore) return avviso(r.errore, true, esitoN);
+    avanti(NF.live ? '' : 'cliente');
+  });
+
+  // ---------- all'apertura ----------
+  if (q.get('nuova')) {
+    NF.sessione().then(function (s) {
+      if (s) { mostraStato('nuova'); setTimeout(function () { $('nuova-pw').focus(); }, 80); }
+      else avviso('Il link per reimpostare la password è scaduto o è già stato usato. Richiedine un altro con "Password dimenticata?".', true);
+    });
+  } else {
+    // se la sessione c'è già, niente modulo: si entra
+    NF.sessione().then(function (s) { if (s) avanti(NF.live ? '' : (s.user.admin ? 'admin' : 'cliente')); });
+  }
 
   // ---------- recensioni che si alternano ----------
   var voci = [].slice.call(document.querySelectorAll('.acc-voci figure')), punti = [].slice.call(document.querySelectorAll('.acc-punti button')), i = 0, giro = null;
