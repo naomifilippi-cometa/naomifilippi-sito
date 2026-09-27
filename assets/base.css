@@ -83,8 +83,8 @@ p{margin:0}
 .lista-check{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .lista-check li{display:flex;gap:12px;align-items:baseline}
 .lista-check li::before{content:"✦";color:var(--lume);font-size:.8rem;flex:none}
-.passi{list-style:none;margin:0;padding:0;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));counter-reset:p}
-.passi li{counter-increment:p;border-top:2px solid var(--petrolio);padding-top:14px;display:grid;gap:6px}
+.passi{list-style:none;margin:0;padding:0;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));counter-reset:p}
+.passi li{counter-increment:p;border-top:2px solid var(--petrolio);padding-top:14px;display:grid;gap:6px;align-content:start}
 .passi li::before{content:"Passo " counter(p);font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--petrolio)}
 .passi b{font-family:var(--f-display);font-weight:500;font-size:1.3rem}
 .passi span{color:var(--inchiostro-2)}
