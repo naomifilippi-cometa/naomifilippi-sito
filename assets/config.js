@@ -23,7 +23,7 @@ window.NF_CONFIG = {
   EMAIL: "hello@naomifilippi.it",
 
   // Prenotazioni: incolla il link del tuo calendario Calendly o Cal.com (facoltativo)
-  CALENDARIO_URL: "",        // es. "https://cal.com/naomifilippi/call-conoscitiva"
+  CALENDARIO_URL: "https://cal.com/naomi-filippi-jjyt72/call-conoscitiva",        // es. "https://cal.com/naomifilippi/call-conoscitiva"
 
   // Dimensione massima dei file caricati dai clienti (MB)
   MAX_FILE_MB: 20

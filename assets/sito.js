@@ -110,9 +110,18 @@
   if (cal) {
     if (!C.CALENDARIO_URL) { cal.closest('[data-calendario]').hidden = true; var alt = document.querySelector('[data-senza-calendario]'); if (alt) alt.hidden = false; }
     else cal.addEventListener('click', function () {
-      var box = document.getElementById('calendario');
-      box.innerHTML = '<iframe src="' + C.CALENDARIO_URL + '" title="Calendario prenotazioni" loading="lazy" style="width:100%;height:720px;border:0;border-radius:14px;background:#fff"></iframe>';
+      var box = document.getElementById('calendario'), url = new URL(C.CALENDARIO_URL), link = url.pathname.replace(/^\/+/, '');
+      box.classList.add('cal-box');
+      box.innerHTML = '<div class="cal-attesa" role="status"><span class="spin" aria-hidden="true"></span>Carico il calendario…</div><div id="cal-inline" style="width:100%;min-height:560px"></div>' +
+        '<p class="cal-riserva">Il calendario non si apre? <a href="' + C.CALENDARIO_URL + '" target="_blank" rel="noopener">Aprilo in una nuova scheda</a></p>';
       cal.hidden = true;
+      // embed ufficiale di Cal.com (inline)
+      (function (W, A, L) { var p = function (a, ar) { a.q.push(ar); }; var d = W.document; W.Cal = W.Cal || function () { var c = W.Cal, ar = arguments; if (!c.loaded) { c.ns = {}; c.q = c.q || []; d.head.appendChild(d.createElement('script')).src = A; c.loaded = true; } if (ar[0] === L) { var api = function () { p(api, arguments); }, ns = ar[1]; api.q = api.q || []; if (typeof ns === 'string') { c.ns[ns] = c.ns[ns] || api; p(c.ns[ns], ar); p(c, ['initNamespace', ns]); } else p(c, ar); return; } p(c, ar); }; })(window, url.origin.replace('://cal.com', '://app.cal.com') + '/embed/embed.js', 'init');
+      Cal('init', 'call', { origin: url.origin });
+      Cal.ns.call('inline', { elementOrSelector: '#cal-inline', calLink: link, config: { layout: 'month_view', theme: 'light' } });
+      Cal.ns.call('ui', { theme: 'light', hideEventTypeDetails: false, layout: 'month_view', cssVarsPerTheme: { light: { 'cal-brand': '#B42A72' } } });
+      Cal.ns.call('on', { action: 'linkReady', callback: function () { var a = box.querySelector('.cal-attesa'); if (a) a.remove(); } });
+      setTimeout(function () { var a = box.querySelector('.cal-attesa'); if (a) a.remove(); }, 8000);
     });
   }
 })();

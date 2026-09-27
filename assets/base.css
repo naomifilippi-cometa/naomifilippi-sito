@@ -120,3 +120,11 @@ p{margin:0}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 
 
+
+/* calendario Cal.com nella pagina Prenota */
+.cal-box{display:grid;gap:10px}
+.cal-attesa{display:flex;align-items:center;gap:10px;padding:18px;color:var(--inchiostro-2);font-size:.95rem}
+.cal-attesa .spin{width:18px;height:18px;border-radius:50%;border:2px solid var(--linea-chiara);border-top-color:var(--lume);animation:cal-gira .8s linear infinite}
+@keyframes cal-gira{to{transform:rotate(360deg)}}
+.cal-riserva{margin:0;font-size:.85rem;color:var(--inchiostro-2)}
+@media (prefers-reduced-motion:reduce){.cal-attesa .spin{animation:none}}
