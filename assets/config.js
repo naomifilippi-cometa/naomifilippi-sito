@@ -15,7 +15,7 @@ window.NF_CONFIG = {
   // Metodi di accesso attivi. Metti true solo dopo aver configurato Google e LinkedIn su Supabase
   // (GUIDA-SETUP, passi 4 e 5): finché sono false la pagina Accedi mostra solo il link via email.
   ACCESSO_GOOGLE: false,
-  ACCESSO_LINKEDIN: false,
+  ACCESSO_LINKEDIN: true,
 
   // Contatti
   WHATSAPP: "393887528320",  // numero in formato internazionale, senza + e senza spazi
