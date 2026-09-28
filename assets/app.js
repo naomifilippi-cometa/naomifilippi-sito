@@ -32,7 +32,7 @@
   var STATI = ['nuovo', 'attivo', 'in pausa', 'concluso'];
   var TAPPE = ['Ascolto', 'Posizionamento', 'Colloqui', 'Offerta e firma'];
   var FASI = { neolaureato: 'Neolaureato', crescita: 'In crescita', cambio: 'Cambio carriera', senior: 'Senior / Executive' };
-  var SERVIZI = ['Primo Passo', 'Ascesa', 'Costellazione', 'Curriculum', 'Profilo LinkedIn', 'Cover letter', 'Orientamento', 'Simulazione colloquio', "Negoziazione dell'offerta"];
+  var SERVIZI = ['Pacchetto Base', 'Ascesa', 'Costellazione', 'Curriculum', 'Profilo LinkedIn', 'Cover letter', 'Orientamento', 'Cerchiamo lavoro insieme', 'Simulazione colloquio', "Negoziazione dell'offerta"];
   var TIPI_OK = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.oasis.opendocument.text', 'text/plain', 'image/jpeg', 'image/png', 'image/webp'];
   function controllaFile(f) {
     var max = (C.MAX_FILE_MB || 20) * 1048576;
@@ -53,7 +53,7 @@
     profili: [
       { id: 'c1', email: 'anna.rossi@example.com', nome: 'Anna Rossi', telefono: '333 123 4567', obiettivo: 'Passare da HR generalist a Talent Acquisition Specialist in ambito tech', fase: 'crescita', servizio: 'Ascesa', stato: 'attivo', passo: 2, avatar_url: '', creato_il: t(21 * G), aggiornato_il: t(2 * G) },
       { id: 'c2', email: 'marco.bianchi@example.com', nome: 'Marco Bianchi', telefono: '347 555 0101', obiettivo: 'Ruolo da Operations Director in una multinazionale del Nord Italia', fase: 'senior', servizio: 'Costellazione', stato: 'attivo', passo: 1, avatar_url: '', creato_il: t(9 * G), aggiornato_il: t(5 * H) },
-      { id: 'c3', email: 'giulia.neri@example.com', nome: 'Giulia Neri', telefono: '', obiettivo: 'Primo ruolo in marketing digitale dopo la laurea magistrale', fase: 'neolaureato', servizio: 'Primo Passo', stato: 'attivo', passo: 3, avatar_url: '', creato_il: t(34 * G), aggiornato_il: t(26 * H) },
+      { id: 'c3', email: 'giulia.neri@example.com', nome: 'Giulia Neri', telefono: '', obiettivo: 'Primo ruolo in marketing digitale dopo la laurea magistrale', fase: 'neolaureato', servizio: 'Pacchetto Base', stato: 'attivo', passo: 3, avatar_url: '', creato_il: t(34 * G), aggiornato_il: t(26 * H) },
       { id: 'c4', email: 'luca.ferri@example.com', nome: 'Luca Ferri', telefono: '340 777 8899', obiettivo: 'Negoziare l\'offerta ricevuta da una società di consulenza', fase: 'crescita', servizio: "Negoziazione dell'offerta", stato: 'concluso', passo: 4, avatar_url: '', creato_il: t(60 * G), aggiornato_il: t(40 * G) },
       { id: 'c5', email: 'sara.conti@example.com', nome: 'Sara Conti', telefono: '', obiettivo: '', fase: null, servizio: null, stato: 'nuovo', passo: 0, avatar_url: '', creato_il: t(3 * H), aggiornato_il: t(3 * H) }
     ],

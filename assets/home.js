@@ -8,21 +8,21 @@
   /* ---------- fase selector ---------- */
   var FASI = {
     neo:{t:"Il primo ruolo giusto, non il primo che capita.",
-         p:"Trasformiamo stage, tesi ed esperienze brevi in un profilo che un recruiter prende sul serio, e ti alleniamo al primo colloquio vero.",
-         b:"Primo Passo · 299 €", liv:0,
-         l:["CV da neolaureato ottimizzato per ATS","LinkedIn che si fa trovare dai recruiter","Cover letter modulare","Simulazione del primo colloquio"]},
+         p:"Trasformiamo stage, tesi ed esperienze brevi in un profilo che un recruiter prende sul serio: CV, cover letter e LinkedIn, insieme.",
+         b:"Pacchetto Base · 299 €",
+         l:["CV riscritto e ottimizzato per gli ATS","Cover letter personalizzabile","LinkedIn che si fa trovare dai recruiter","Risparmi 189 € rispetto ai servizi singoli"]},
     crescita:{t:"Il salto di ruolo che aspetti da un po'.",
          p:"Raccontiamo i risultati che hai ottenuto, ti prepariamo ai colloqui per il livello successivo e arriviamo all'offerta con i numeri giusti.",
-         b:"Ascesa · 690 €", liv:1,
-         l:["CV centrato sui risultati misurabili","2 sessioni di coaching sulla strategia","Colloquio simulato sul ruolo target","Sessione strategica sull'offerta"]},
+         b:"Ascesa · 690 €",
+         l:["CV, cover letter e LinkedIn","2 sessioni di coaching sulla strategia","Colloquio simulato sul ruolo target","Sessione strategica sull'offerta"]},
     cambio:{t:"Cambiare settore senza ripartire da zero.",
          p:"Partiamo dall'orientamento: competenze trasferibili, ruoli compatibili, un piano a 90 giorni. Poi riscriviamo la tua storia per il nuovo mercato.",
-         b:"Ascesa con percorso di orientamento", liv:1,
-         l:["Percorso di orientamento in 4 sessioni","Mappa delle competenze trasferibili","CV e LinkedIn riposizionati","Preparazione ai colloqui nel nuovo settore"]},
+         b:"Percorso di orientamento + pacchetto Base",
+         l:["Percorso di orientamento in 4 sessioni","Mappa delle competenze trasferibili","CV, cover letter e LinkedIn riposizionati","Preparazione ai colloqui nel nuovo settore"]},
     senior:{t:"Posizionamento executive e trattativa fino alla firma.",
-         p:"Documenti bilingue, strategia di ricerca riservata e un affiancamento sulla negoziazione di pacchetto, benefit e clausole.",
-         b:"Costellazione · 1.390 €", liv:2,
-         l:["Executive CV e LinkedIn in italiano e inglese","Percorso strategico in 4 sessioni","2 simulazioni con panel","Offer Sprint e affiancamento per 3 mesi"]}
+         p:"Documenti in italiano e in inglese, strategia di ricerca riservata e un affiancamento sulla negoziazione di pacchetto, benefit e clausole.",
+         b:"Costellazione · 1.390 €",
+         l:["Executive CV e LinkedIn in italiano e inglese","Percorso strategico in 4 sessioni","2 simulazioni di colloquio","Offer Sprint e affiancamento per 3 mesi"]}
   };
   var tabs = document.querySelectorAll('.tab[data-fase]'), pannello = document.querySelector('.fase-panel');
   function setFase(k, anima){
@@ -34,36 +34,11 @@
     document.getElementById('f-testo').textContent = f.p;
     document.getElementById('f-bundle').textContent = f.b;
     document.getElementById('f-lista').innerHTML = f.l.map(function(x){return '<li>'+x+'</li>';}).join('');
-    setLiv(f.liv);
   }
   tabs.forEach(function(t){ t.addEventListener('click', function(){ setFase(t.dataset.fase, true); }); });
-
-  /* ---------- listino ---------- */
-  var LISTINO = [
-    ["Revisione CV con feedback commentato","Correzioni e suggerimenti sul tuo CV attuale",[79,99,129]],
-    ["Riscrittura CV completa","Intervista + 2 revisioni",[149,229,390]],
-    ["Ottimizzazione profilo LinkedIn","Headline, Informazioni, esperienze, parole chiave",[129,190,290]],
-    ["Cover letter","39 € se inclusa in un percorso",[59,69,89]],
-    ["Sessione di orientamento","60 minuti + riepilogo scritto",[110,110,150]],
-    ["Percorso di orientamento","4 sessioni + piano d'azione a 90 giorni",[390,390,540]],
-    ["Simulazione colloquio","60 minuti, registrazione e report",[119,139,179]],
-    ["Sessione strategica sull'offerta","60 minuti + benchmark retributivo",[149,149,199],true],
-    ["Offer Sprint","2 videochiamate, script e supporto email per 14 giorni",[null,349,590],true]
-  ];
-  var eur = new Intl.NumberFormat('it-IT');
-  var seg = document.querySelectorAll('.seg button');
-  function setLiv(i){
-    if (!document.getElementById('listino')) return;
-    seg.forEach(function(b){ b.setAttribute('aria-pressed', +b.dataset.liv===i ? 'true':'false'); });
-    document.getElementById('listino').innerHTML = LISTINO.map(function(r){
-      var v = r[2][i];
-      return '<tr'+(r[3]?' class="hl"':'')+'><td>'+r[0]+'<small>'+r[1]+'</small></td><td class="p">'+(v==null?'n.d.':eur.format(v)+' €')+'</td></tr>';
-    }).join('');
-  }
-  seg.forEach(function(b){ b.addEventListener('click', function(){ setLiv(+b.dataset.liv); }); });
   if (tabs.length) setFase('neo');
-  setLiv(1);
 
+  var eur = new Intl.NumberFormat('it-IT');
   /* ---------- calcolatore ---------- */
   var ral = document.getElementById('ral'), pct = document.getElementById('pct');
   if (ral && pct) {
@@ -123,7 +98,7 @@
     dpr = Math.min(2, devicePixelRatio || 1);
     W = cv.offsetWidth; H = cv.offsetHeight;
     cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-    luci = []; var n = Math.round(W*H/9000);
+    luci = []; var n = Math.round(W*H/15000);
     for (var i=0;i<n;i++) luci.push({x:Math.random()*W, y:Math.random()*H, r:Math.random()*2.2+.4, a:Math.random()*.55+.15, v:Math.random()*10+4, f:Math.random()*6.28, rosa:Math.random()<.35, bokeh:Math.random()<.08});
   }
   function pt(t){ /* il percorso: dal basso a sinistra all'alto a destra */
@@ -132,7 +107,7 @@
   }
   function glow(x,y,r,a){
     var g = ctx.createRadialGradient(x,y,0,x,y,r);
-    g.addColorStop(0,'rgba(255,236,246,'+a+')'); g.addColorStop(.3,'rgba(242,154,198,'+(a*.55)+')'); g.addColorStop(1,'rgba(214,51,132,0)');
+    g.addColorStop(0,'rgba(214,51,132,'+a+')'); g.addColorStop(.3,'rgba(242,154,198,'+(a*.45)+')'); g.addColorStop(1,'rgba(242,154,198,0)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x,y,r,0,6.283); ctx.fill();
   }
   function frame(ms){
@@ -147,7 +122,7 @@
         g.addColorStop(0, l.rosa ? 'rgba(242,154,198,'+(a*.35)+')' : 'rgba(111,195,195,'+(a*.35)+')'); g.addColorStop(1,'rgba(0,0,0,0)');
         ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x,y,l.r*9,0,6.283); ctx.fill();
       } else {
-        ctx.fillStyle = l.rosa ? 'rgba(242,154,198,'+a+')' : 'rgba(214,240,238,'+a+')';
+        ctx.fillStyle = l.rosa ? 'rgba(214,51,132,'+(a*.55)+')' : 'rgba(21,122,126,'+(a*.45)+')';
         ctx.beginPath(); ctx.arc(x,y,l.r,0,6.283); ctx.fill();
       }
     });
@@ -159,14 +134,14 @@
       var t0 = head - L*(j+1)/N, t1 = head - L*j/N;
       if (t1 <= 0 || t0 >= 1) continue;
       var a0 = pt(Math.max(0,t0)), b0 = pt(Math.min(1,t1)), k = 1 - j/N;
-      ctx.strokeStyle = 'rgba('+Math.round(111+131*k)+','+Math.round(195-41*k)+','+Math.round(195+3*k)+','+(k*k*.95*fade)+')';
+      ctx.strokeStyle = 'rgba('+Math.round(21+193*k)+','+Math.round(122-71*k)+','+Math.round(126+6*k)+','+(k*k*.75*fade)+')';
       ctx.lineWidth = .8 + 4.2*k*k; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(a0.x,a0.y); ctx.lineTo(b0.x,b0.y); ctx.stroke();
     }
     if (head <= 1){
       var h = pt(head), pulse = reduce ? 1 : (.9 + .1*Math.sin(time*3));
-      glow(h.x, h.y, 60*pulse, .4*fade);
-      glow(h.x, h.y, 14, 1*fade);
+      glow(h.x, h.y, 60*pulse, .22*fade);
+      glow(h.x, h.y, 12, .95*fade);
     }
     if (!reduce) requestAnimationFrame(frame);
   }

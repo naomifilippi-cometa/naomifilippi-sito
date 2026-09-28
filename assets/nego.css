@@ -1,0 +1,31 @@
+/* Sezione "negoziazione" con calcolatore, usata anche nella pagina del servizio (stacco scuro) */
+.nego{--testo:#F3EAF0;--testo-2:#C9B6C3;--linea:rgba(243,234,240,.14);color:var(--testo)}
+.nego .eyebrow{color:var(--lume-chiaro)}
+.nego .lead{color:var(--testo-2)}
+.nego h2{font-size:clamp(1.9rem,3.6vw,3rem)}
+.grain{position:relative;isolation:isolate}
+.grain::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- negoziazione ---------- */
+.nego{background:
+  radial-gradient(700px 420px at 90% 20%, rgba(214,51,132,.28), transparent 65%),
+  var(--prugna)}
+.nego .wrap{padding-block:clamp(72px,9vw,120px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.nego .legge{margin-top:18px;padding:14px 16px;border-left:2px solid var(--lume);background:rgba(255,255,255,.04);font-size:.93rem;color:var(--testo-2);border-radius:0 8px 8px 0}
+.calc{background:rgba(20,6,15,.6);border:1px solid var(--linea);border-radius:var(--r);padding:clamp(22px,3vw,34px);display:grid;gap:20px}
+.calc label{display:grid;gap:8px;font-size:.9rem;color:var(--testo-2)}
+.calc .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.calc output,.calc .val{font-family:var(--f-mono);color:#fff;font-variant-numeric:tabular-nums}
+.calc input[type=range]{width:100%;accent-color:var(--lume)}
+.calc input[type=number]{
+  width:100%;font:500 1.1rem var(--f-mono);color:#fff;background:rgba(255,255,255,.05);
+  border:1px solid var(--linea);border-radius:10px;padding:.7em .8em;font-variant-numeric:tabular-nums
+}
+.calc .esito{border-top:1px solid var(--linea);padding-top:18px;display:grid;gap:6px}
+.calc .big{font-family:var(--f-display);font-size:clamp(2.4rem,5vw,3.4rem);color:var(--lume-chiaro);font-variant-numeric:tabular-nums;line-height:1}
+.calc .nota{font-size:.8rem;color:var(--testo-2)}
+@media (max-width:860px){.nego .wrap{grid-template-columns:1fr}}
+
