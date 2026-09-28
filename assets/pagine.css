@@ -149,3 +149,22 @@
 .opz-tab b{font-family:var(--f-mono);font-weight:500;font-size:.92rem;color:var(--magenta);white-space:nowrap}
 #pacchetti,#servizi-singoli,#opzioni{scroll-margin-top:70px}
 .listino-sez .wrap,.opzioni-sez .wrap,.strade-sez .wrap{padding-block:clamp(64px,8vw,110px)}
+
+/* ================= bilanciamento ================= */
+.valori-sez{--testo:#F3EAF0;--testo-2:#C9B6C3;color:var(--testo);border:0;
+  background:radial-gradient(700px 480px at 100% 0%,rgba(214,51,132,.32),transparent 60%),radial-gradient(600px 420px at 0% 100%,rgba(21,122,126,.35),transparent 60%),var(--prugna)}
+.valori-sez .eyebrow{color:var(--lume-chiaro)}
+.valori-sez h2 em{color:var(--lume-chiaro)}
+.valori > div{background:rgba(255,255,255,.05);border-color:rgba(243,234,240,.14);border-top-color:var(--lume)}
+.valori p{color:var(--testo-2)}
+.num{-webkit-text-stroke:1px var(--lume-chiaro)}
+.griglia-3 .num{-webkit-text-stroke:1px var(--magenta)}
+.area-sez{background:radial-gradient(700px 480px at 100% 40%,rgba(214,51,132,.22),transparent 60%),linear-gradient(180deg,#F4E4EB,#EFD9E3)}
+.opzioni-sez{--testo:#F3EAF0;--testo-2:#CFE2E1;color:var(--testo);border:0;
+  background:radial-gradient(620px 420px at 100% 100%,rgba(214,51,132,.3),transparent 65%),linear-gradient(160deg,var(--petrolio),var(--petrolio-2))}
+.opzioni-sez .eyebrow{color:var(--lume-chiaro)}
+.opzioni-sez .lead{color:var(--testo-2)}
+.opzioni-sez .opz{background:#fff;color:var(--inchiostro)}
+.listino-sez{background:linear-gradient(180deg,#F4E4EB,var(--avorio) 70%)}
+.strade-sez{background:var(--avorio)}
+.pagare{background:#fff}

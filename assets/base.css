@@ -146,3 +146,7 @@ p{margin:0}
 .carta-scura{background:var(--prugna);color:var(--testo);border-color:var(--prugna)}
 .carta-scura .eyebrow{color:var(--lume-chiaro)}
 .sez-head h2 em{color:var(--magenta)}
+
+/* ================= bilanciamento ================= */
+.sez-prezzi{background:linear-gradient(180deg,#F4E4EB,#EFD9E3)}
+.aumento-sez + .sez-prezzi,.sez-prezzi{border-top:0}

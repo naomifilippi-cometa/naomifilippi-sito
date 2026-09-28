@@ -399,3 +399,29 @@ tr.hl td small{font-weight:400}
 @media (prefers-reduced-motion: reduce){.js .tappa:not(.on) .k,.js .tappa:not(.on) h3,.js .tappa:not(.on) p{opacity:1;transform:none}}
 .sez-head h2 em{color:var(--magenta)}
 .chi .eyebrow{display:block;margin-bottom:12px}
+
+/* ================= bilanciamento: bande colorate e stacchi scuri tra le sezioni chiare ================= */
+:root{--velo:#F4E4EB;--velo-2:#EFD9E3;--salvia:#E2EFEE}
+.hero{background:
+    radial-gradient(900px 600px at 92% -5%, rgba(214,51,132,.30), transparent 60%),
+    radial-gradient(700px 520px at 60% 110%, rgba(242,154,198,.30), transparent 60%),
+    radial-gradient(760px 560px at -5% 100%, rgba(21,122,126,.20), transparent 60%),
+    linear-gradient(160deg,#F8EEF2,var(--avorio) 55%,#EEF4F2)}
+.hero .hero-fatti{border-top:1px solid rgba(142,30,99,.15)}
+.fase{background:linear-gradient(180deg,var(--velo),var(--velo-2));border-bottom:0}
+.fase-panel{background:#fff}
+.servizi{background:var(--avorio)}
+/* audit: stacco scuro petrolio */
+.audit{--testo:#F3EAF0;--testo-2:#CFE2E1;color:var(--testo);background:
+  radial-gradient(620px 420px at 95% 100%, rgba(214,51,132,.35), transparent 65%),
+  radial-gradient(620px 420px at 0% 0%, rgba(111,195,195,.25), transparent 65%),
+  linear-gradient(160deg,var(--petrolio),var(--petrolio-2))}
+.audit .eyebrow{color:var(--lume-chiaro)}
+.audit .lead,.audit .audit-punti li{color:var(--testo-2)}
+.audit .audit-punti li::before{color:#7BE0B0}
+.audit form.card{box-shadow:0 40px 80px -40px rgba(0,0,0,.6)}
+.metodo{background:#fff}
+.voci{background:linear-gradient(180deg,var(--velo),#F7EEF1)}
+.prezzi.chiaro{background:linear-gradient(180deg,var(--avorio),#F1EAE4)}
+.faq{background:var(--avorio)}
+.bundle{box-shadow:0 20px 50px -34px rgba(43,13,36,.35)}

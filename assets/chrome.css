@@ -270,3 +270,11 @@ html.menu-aperto .wa-fab{opacity:0;pointer-events:none}
 .carta-link:hover{transform:translateY(-3px);border-color:var(--magenta);box-shadow:0 18px 40px -24px rgba(43,13,36,.5)}
 .mega-lista li:last-child{grid-column:1/-1}
 .mega-lista li:last-child a{background:linear-gradient(120deg,rgba(214,51,132,.08),rgba(111,195,195,.08))}
+
+/* ================= bilanciamento: aperture delle pagine interne più colorate ================= */
+.hero-pag{background:
+  radial-gradient(800px 480px at 92% -10%,rgba(214,51,132,.30),transparent 60%),
+  radial-gradient(640px 460px at 55% 120%,rgba(242,154,198,.28),transparent 60%),
+  radial-gradient(700px 500px at -5% 100%,rgba(21,122,126,.22),transparent 60%),
+  linear-gradient(160deg,#F8EEF2,#F4E6EC 55%,#EEF3F1)}
+.top{background:rgba(250,244,246,.84)}
