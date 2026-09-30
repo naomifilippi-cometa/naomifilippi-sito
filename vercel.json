@@ -26,6 +26,8 @@
   ],
   "redirects": [
     { "source": "/area-clienti", "destination": "/accedi", "permanent": false },
-    { "source": "/login", "destination": "/accedi", "permanent": false }
+    { "source": "/login", "destination": "/accedi", "permanent": false },
+    { "source": "/prezzi", "destination": "/servizi#pacchetti", "permanent": true },
+    { "source": "/prezzi.html", "destination": "/servizi#pacchetti", "permanent": true }
   ]
 }

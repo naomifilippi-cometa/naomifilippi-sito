@@ -267,3 +267,6 @@ body.app{background:var(--avorio);min-height:100vh;min-height:100svh}
 .foto-profilo .btn-mini[aria-busy="true"]{opacity:.6;pointer-events:none}
 .foto-profilo .foto-togli{border-color:transparent;color:var(--inchiostro-2)}
 .solo-lettori{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* intestazione: nome e sottotitolo su due righe */
+.app-top .logo > div b{display:block;font-family:var(--f-display);font-style:italic;font-weight:500;font-size:1.35rem;line-height:1;white-space:nowrap}
+.app-top .logo > div span{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--testo-2);margin-top:6px;white-space:nowrap}

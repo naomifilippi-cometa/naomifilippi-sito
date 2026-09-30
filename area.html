@@ -50,7 +50,7 @@
       '<nav class="salti" aria-label="Vai a"><a href="#p-percorso">Percorso</a><a href="#p-documenti">Documenti</a><a href="#p-messaggi">Messaggi <span id="salto-badge"></span></a><a href="#p-profilo">Profilo</a></nav>' +
       '<div class="griglia-app"><div class="colonna">' +
       '<section class="pannello" id="p-percorso"><header><h2>Il tuo percorso</h2><span class="sotto" id="servizio"></span></header><ol class="percorso disegna" id="percorso"></ol><div id="appunt"></div></section>' +
-      '<section class="pannello" id="p-documenti"><header><h2>Documenti</h2><span class="sotto">Solo tu e Naomi potete vederli</span></header><div id="drop"></div><div id="docs"></div></section>' +
+      '<section class="pannello" id="p-documenti"><header><h2>Documenti</h2><span class="sotto">Li vediamo solo tu e io</span></header><div id="drop"></div><div id="docs"></div></section>' +
       '</div><div class="colonna">' +
       '<section class="pannello" id="p-messaggi"><header><h2>Messaggi con Naomi</h2><a class="btn-mini" id="wa" target="_blank" rel="noopener">WhatsApp</a></header><div class="chat" id="chat" aria-live="polite"></div><div id="comp"></div></section>' +
       '<section class="pannello" id="p-profilo"><header><h2>Il tuo profilo</h2></header>' +
@@ -60,7 +60,7 @@
       '<input id="pr-foto" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" class="solo-lettori" tabindex="-1" aria-hidden="true"></div></div>' +
       '<form id="f-profilo" style="display:grid;gap:12px">' +
       '<label class="campo" for="pr-nome">Nome e cognome<input id="pr-nome" name="nome" autocomplete="name"></label>' +
-      '<label class="campo" for="pr-tel">Telefono (Naomi ti chiama a questo numero)<input id="pr-tel" name="telefono" type="tel" autocomplete="tel"></label>' +
+      '<label class="campo" for="pr-tel">Telefono (ti chiamo a questo numero)<input id="pr-tel" name="telefono" type="tel" autocomplete="tel"></label>' +
       '<label class="campo" for="pr-fase">Fase della carriera<select id="pr-fase" name="fase"><option value="">Scegli…</option>' + Object.keys(NF.FASI).map(function (k) { return '<option value="' + k + '">' + NF.FASI[k] + '</option>'; }).join('') + '</select></label>' +
       '<label class="campo" for="pr-obiettivo">Il tuo obiettivo<textarea id="pr-obiettivo" name="obiettivo" placeholder="Es. passare a un ruolo da Product Manager entro l\'anno"></textarea></label>' +
       '<button class="btn btn-scuro" type="submit">Salva profilo</button></form></section>' +
@@ -78,7 +78,7 @@
       document.getElementById('pr-avatar').innerHTML = UI.avatar(io, true);
       box.classList.toggle('manca', !ha);
       document.getElementById('foto-titolo').textContent = ha ? 'Foto profilo' : 'Aggiungi la tua foto';
-      document.getElementById('foto-aiuto').textContent = ha ? 'La vede solo Naomi. Puoi cambiarla quando vuoi.' : 'Aiuta Naomi a riconoscerti prima delle chiamate. La vede solo lei.';
+      document.getElementById('foto-aiuto').textContent = ha ? 'La vedo solo io. Puoi cambiarla quando vuoi.' : 'Mi aiuta a riconoscerti prima delle chiamate. La vedo solo io.';
       fotoBtn.textContent = ha ? 'Cambia foto' : 'Carica una foto';
       fotoVia.hidden = !ha;
       var su = document.querySelector('.chi-sono .avatar'); if (su) su.outerHTML = UI.avatar(io);
@@ -131,7 +131,7 @@
   function intestazione() {
     var nome = (io.nome || '').split(' ')[0];
     document.getElementById('ciao').innerHTML = esc(UI.saluto()) + (nome ? ', ' + esc(nome) : '') + '. <span class="mano" aria-hidden="true">✦</span>';
-    document.getElementById('sotto-ciao').textContent = io.obiettivo ? 'Obiettivo: ' + io.obiettivo : 'Completa il profilo con il tuo obiettivo: aiuta Naomi a prepararsi.';
+    document.getElementById('sotto-ciao').textContent = io.obiettivo ? 'Obiettivo: ' + io.obiettivo : 'Completa il profilo con il tuo obiettivo: così posso prepararmi al meglio per te.';
     document.getElementById('stato-pill').innerHTML = '<span class="pill ' + esc((io.stato || 'nuovo').replace(' ', '-')) + '">' + esc(io.stato || 'nuovo') + '</span>';
     document.getElementById('servizio').textContent = io.servizio ? 'Servizio: ' + io.servizio : 'Il servizio verrà indicato dopo la call conoscitiva';
     var p = io.passo || 0, ol = document.getElementById('percorso');
@@ -153,12 +153,12 @@
     UI.segnaNuovi(box, '.doc');
     var lista = box.querySelector('.doc-lista'); if (lista && primaVolta) lista.classList.add('anima-righe');
     if (primaVolta) { primaVolta = false; setTimeout(function () { var m = root.querySelector('.anima'); if (m) m.classList.remove('anima'); }, 1200); }
-    UI.chat(document.getElementById('chat'), msg, docs, { naomi: false, nomeCliente: 'Tu', vuoto: 'Nessun messaggio. Scrivi a Naomi per qualsiasi domanda sul tuo percorso.' });
+    UI.chat(document.getElementById('chat'), msg, docs, { naomi: false, nomeCliente: 'Tu', vuoto: 'Nessun messaggio. Scrivimi per qualsiasi domanda sul tuo percorso.' });
     var nonLetti = msg.filter(function (m) { return m.da_naomi && !m.letto; }).length;
     document.getElementById('salto-badge').innerHTML = nonLetti ? '<span class="badge-num">' + nonLetti + '</span>' : '';
     var prossimi = app.filter(function (a) { return new Date(a.inizio) > new Date(Date.now() - 3600000); });
     var a = prossimi[0], ab = document.getElementById('appunt');
-    if (!a) ab.innerHTML = '<div class="vuoto">Nessun appuntamento in programma. <a href="prenota.html">Prenota una sessione</a> o scrivi a Naomi.</div>';
+    if (!a) ab.innerHTML = '<div class="vuoto">Nessun appuntamento in programma. <a href="prenota.html">Prenota una sessione</a> o scrivimi.</div>';
     else {
       var d = new Date(a.inizio), video = /^https:\/\//.test(a.link || '');
       ab.innerHTML = '<div class="appunt"><div class="giorno"><span>' + esc(d.toLocaleDateString('it-IT', { month: 'short' })) + '</span><b>' + d.getDate() + '</b></div>' +

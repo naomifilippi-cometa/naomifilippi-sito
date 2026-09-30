@@ -278,3 +278,18 @@ html.menu-aperto .wa-fab{opacity:0;pointer-events:none}
   radial-gradient(700px 500px at -5% 100%,rgba(21,122,126,.22),transparent 60%),
   linear-gradient(160deg,#F8EEF2,#F4E6EC 55%,#EEF3F1)}
 .top{background:rgba(250,244,246,.84)}
+
+/* ================= tono professionale ================= */
+.top{background:rgba(255,255,255,.9)}
+.hero-pag{background:
+  radial-gradient(760px 460px at 96% -10%,rgba(13,77,87,.13),transparent 60%),
+  radial-gradient(600px 420px at 0% 110%,rgba(142,30,99,.07),transparent 60%),
+  linear-gradient(170deg,#FCFAF7,#F3EEE8)}
+.hero-pag .eyebrow,.briciole a:hover{color:var(--magenta)}
+.nav .ind{background:linear-gradient(90deg,var(--petrolio),var(--magenta));box-shadow:none}
+.top::after{background:linear-gradient(90deg,var(--petrolio),var(--magenta))!important}
+.cta-fine{background:radial-gradient(600px 380px at 10% 10%,rgba(21,122,126,.35),transparent 65%),linear-gradient(160deg,var(--prugna),#1E0918)}
+.mega-lato{background:radial-gradient(260px 200px at 100% 0%,rgba(142,30,99,.45),transparent 70%),linear-gradient(160deg,var(--petrolio),#072E35);border-color:var(--petrolio)}
+.mega-lista li:last-child a{background:var(--avorio)}
+.hero-pag .lead-forte{color:var(--inchiostro);font-weight:500}
+.hero-pag .lead-forte strong{color:var(--magenta)}

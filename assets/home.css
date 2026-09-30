@@ -425,3 +425,71 @@ tr.hl td small{font-weight:400}
 .prezzi.chiaro{background:linear-gradient(180deg,var(--avorio),#F1EAE4)}
 .faq{background:var(--avorio)}
 .bundle{box-shadow:0 20px 50px -34px rgba(43,13,36,.35)}
+
+/* ================= tono professionale: base chiara neutra, petrolio e prugna per i contrasti, magenta solo come accento ================= */
+:root{--velo:#EFEAE4;--velo-2:#E8E1D9;--pietra:#F3EEE8;--petrolio-velo:#EAF1F0}
+.btn-lume{background:var(--magenta);color:#fff}
+.btn-lume:hover{background:var(--prugna);box-shadow:0 10px 30px -10px rgba(43,13,36,.55)}
+.hero{background:
+    radial-gradient(820px 560px at 96% 0%, rgba(13,77,87,.13), transparent 62%),
+    radial-gradient(640px 480px at 0% 100%, rgba(142,30,99,.07), transparent 60%),
+    linear-gradient(170deg,#FCFAF7,var(--pietra))}
+.hero h1 em{color:var(--magenta)}
+.hero .hero-fatti{border-top:1px solid var(--linea-chiara)}
+.hero-fatti li{border-left-color:var(--petrolio)}
+.hero-fatti b{color:var(--petrolio)}
+.hero-pres .eyebrow{color:var(--petrolio)}
+.fase{background:var(--petrolio-velo)}
+.fase-panel{background:#fff;border-left-color:var(--petrolio)}
+.tab[aria-selected="true"]{background:var(--petrolio);border-color:var(--petrolio)}
+.voci{background:var(--velo)}
+.rec.grande{background:#fff;border-top:3px solid var(--petrolio)}
+.stelle{color:#C9892B}
+.prezzi.chiaro{background:linear-gradient(180deg,var(--avorio),var(--velo))}
+.srv .da,.fase-pick b{color:var(--magenta)}
+.eyebrow{color:var(--magenta)}
+/* audit: stacco prugna */
+.audit{--testo-2:#D8C6D2;background:
+  radial-gradient(620px 420px at 100% 100%, rgba(21,122,126,.35), transparent 65%),
+  linear-gradient(160deg,var(--prugna),#1E0918)}
+.audit .audit-punti li::before{color:var(--teal-chiaro)}
+
+/* ================= home: le frasi in cui ti riconosci ================= */
+.dolori{background:#fff;border-bottom:1px solid var(--linea-chiara)}
+.dolori .wrap{padding-block:clamp(64px,8vw,110px);display:grid;gap:40px}
+.dolori-griglia{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.dolore{position:relative;display:grid;gap:18px;align-content:space-between;min-height:12rem;padding:24px 22px 20px;border-radius:var(--r);border:1px solid var(--linea-chiara);background:var(--avorio);color:inherit;text-decoration:none;transition:border-color .3s,transform .3s,box-shadow .3s,background-color .3s}
+.dolore q{font-family:var(--f-display);font-style:italic;font-size:1.28rem;line-height:1.25;quotes:"«" "»"}
+.dolore .sol{display:grid;gap:3px;font-weight:600;font-size:.92rem;color:var(--petrolio);padding-top:12px;border-top:1px solid var(--linea-chiara)}
+.dolore .sol small{font-family:var(--f-mono);font-weight:400;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--inchiostro-2)}
+.dolore:hover{border-color:var(--petrolio);background:#fff;transform:translateY(-3px);box-shadow:0 24px 50px -32px rgba(13,77,87,.5)}
+.dolore-audit{background:var(--petrolio);border-color:var(--petrolio);color:#F3EAF0}
+.dolore-audit .sol{color:#fff;border-top-color:rgba(243,234,240,.2)}
+.dolore-audit .sol small{color:var(--teal-chiaro)}
+.dolore-audit:hover{background:var(--petrolio-2)}
+@media (max-width:1100px){.dolori-griglia{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.dolori-griglia{grid-template-columns:1fr}.dolore{min-height:0}}
+
+/* ================= home: perché scegliere me (stacco petrolio) ================= */
+.perche{--testo:#F3EAF0;--testo-2:#CFE2E1;--linea:rgba(243,234,240,.14);color:var(--testo);
+  background:radial-gradient(760px 520px at 100% 0%,rgba(142,30,99,.28),transparent 60%),linear-gradient(160deg,var(--petrolio),#072E35)}
+.perche .wrap{padding-block:clamp(64px,8vw,110px);display:grid;gap:44px}
+.perche .eyebrow{color:var(--teal-chiaro)}
+.perche .lead{color:var(--testo-2)}
+.perche h2 em{color:var(--lume-chiaro)}
+.perche-testa{display:grid;grid-template-columns:minmax(200px,17rem) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.perche-foto{margin:0;aspect-ratio:4/5;border-radius:18px 18px 18px 80px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.perche-foto img{width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+.perche .sez-head{max-width:720px}
+.perche .btn-ghost{justify-self:start;border-color:rgba(243,234,240,.3);color:#fff;background:transparent}
+.perche .btn-ghost:hover{border-color:var(--teal-chiaro);color:#fff;background:rgba(255,255,255,.06)}
+.perche-griglia{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.perche-griglia > div{display:grid;gap:10px;align-content:start;padding:24px;border-radius:var(--r);border:1px solid rgba(243,234,240,.14);border-top:2px solid var(--teal-chiaro);background:rgba(255,255,255,.04)}
+.perche-griglia .num{font-family:var(--f-display);font-style:italic;font-size:2.4rem;line-height:1;color:transparent;-webkit-text-stroke:1px var(--teal-chiaro)}
+.perche-griglia b{font-family:var(--f-display);font-weight:500;font-size:1.35rem;line-height:1.2}
+.perche-griglia p{color:var(--testo-2);font-size:.97rem}
+@media (max-width:900px){.perche-testa{grid-template-columns:1fr}.perche-foto{max-width:15rem}.perche-griglia{grid-template-columns:1fr}}
+@media (min-width:901px) and (max-width:1100px){.perche-griglia{grid-template-columns:1fr 1fr}}
+.metodo{background:var(--avorio)}
+.servizi{background:#fff}
+.faq{background:var(--avorio)}

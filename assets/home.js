@@ -8,15 +8,15 @@
   /* ---------- fase selector ---------- */
   var FASI = {
     neo:{t:"Il primo ruolo giusto, non il primo che capita.",
-         p:"Trasformiamo stage, tesi ed esperienze brevi in un profilo che un recruiter prende sul serio: CV, cover letter e LinkedIn, insieme.",
+         p:"Trasformo stage, tesi ed esperienze brevi in un profilo che un recruiter prende sul serio: CV, cover letter e LinkedIn, pronti per candidarti.",
          b:"Pacchetto Base · 299 €",
          l:["CV riscritto e ottimizzato per gli ATS","Cover letter personalizzabile","LinkedIn che si fa trovare dai recruiter","Risparmi 189 € rispetto ai servizi singoli"]},
     crescita:{t:"Il salto di ruolo che aspetti da un po'.",
-         p:"Raccontiamo i risultati che hai ottenuto, ti prepariamo ai colloqui per il livello successivo e arriviamo all'offerta con i numeri giusti.",
+         p:"Metto in evidenza i risultati che hai ottenuto, ti preparo ai colloqui per il livello successivo e ti accompagno all'offerta con i numeri giusti.",
          b:"Ascesa · 690 €",
          l:["CV, cover letter e LinkedIn","2 sessioni di coaching sulla strategia","Colloquio simulato sul ruolo target","Sessione strategica sull'offerta"]},
     cambio:{t:"Cambiare settore senza ripartire da zero.",
-         p:"Partiamo dall'orientamento: competenze trasferibili, ruoli compatibili, un piano a 90 giorni. Poi riscriviamo la tua storia per il nuovo mercato.",
+         p:"Si parte dall'orientamento: competenze trasferibili, ruoli compatibili, un piano a 90 giorni. Poi riscrivo la tua storia per il nuovo mercato.",
          b:"Percorso di orientamento + pacchetto Base",
          l:["Percorso di orientamento in 4 sessioni","Mappa delle competenze trasferibili","CV, cover letter e LinkedIn riposizionati","Preparazione ai colloqui nel nuovo settore"]},
     senior:{t:"Posizionamento executive e trattativa fino alla firma.",

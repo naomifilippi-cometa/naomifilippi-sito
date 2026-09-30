@@ -150,3 +150,29 @@ p{margin:0}
 /* ================= bilanciamento ================= */
 .sez-prezzi{background:linear-gradient(180deg,#F4E4EB,#EFD9E3)}
 .aumento-sez + .sez-prezzi,.sez-prezzi{border-top:0}
+
+/* ================= tono professionale e nuovi blocchi delle pagine servizio ================= */
+.btn-lume{background:var(--magenta);color:#fff}
+.btn-lume:hover{background:var(--prugna);box-shadow:0 10px 30px -10px rgba(43,13,36,.55)}
+.sez-prezzi{background:#F3EEE8}
+.aumento{background:linear-gradient(135deg,rgba(13,77,87,.07),rgba(142,30,99,.05)),var(--bianco);border-left-color:var(--petrolio)}
+.carta-dolori{gap:14px}
+.dolore-titolo{font-family:var(--f-display);font-style:italic;font-size:clamp(1.5rem,2.4vw,1.9rem);line-height:1.2;color:var(--inchiostro)}
+.lista-dolori{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.lista-dolori li{display:flex;gap:12px;align-items:baseline;color:var(--inchiostro-2)}
+.lista-dolori li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;border:2px solid var(--petrolio);transform:translateY(-1px)}
+.dolore-sol{font-weight:600;color:var(--petrolio);padding-top:12px;border-top:1px solid var(--linea-chiara)}
+.opzioni-plus{display:grid;gap:18px;margin-top:8px}
+.opz-testa{display:grid;gap:6px}
+.opz-testa h3{font-size:clamp(1.5rem,2.6vw,2rem)}
+.opz-griglia{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.opz-plus{position:relative;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-content:start;padding:22px;border-radius:16px;background:var(--bianco);border:1px solid var(--linea-chiara);box-shadow:0 20px 44px -30px rgba(43,13,36,.4)}
+.opz-ico{grid-row:span 2;display:grid;place-items:center;width:48px;height:48px;border-radius:14px;font:600 .85rem var(--f-mono);letter-spacing:.06em;color:#fff;background:linear-gradient(135deg,var(--petrolio),var(--teal))}
+.opz-express .opz-ico{background:linear-gradient(135deg,var(--magenta),var(--lume))}
+.opz-ico svg{width:24px;height:24px}
+.opz-t{display:grid;gap:6px}
+.opz-t b{font-family:var(--f-display);font-weight:500;font-size:1.3rem;line-height:1.2}
+.opz-t p{color:var(--inchiostro-2);font-size:.95rem}
+.opz-prezzo{grid-column:2;justify-self:start;margin-top:6px;font:600 .9rem var(--f-body);color:var(--magenta);background:rgba(142,30,99,.08);border-radius:999px;padding:5px 12px}
+.sez-head h2 em,.opz-testa h3 em{color:var(--magenta)}
+.prezzo-carta{border-top-color:var(--petrolio)}
