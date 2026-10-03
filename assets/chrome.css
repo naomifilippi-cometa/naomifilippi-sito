@@ -293,3 +293,12 @@ html.menu-aperto .wa-fab{opacity:0;pointer-events:none}
 .mega-lista li:last-child a{background:var(--avorio)}
 .hero-pag .lead-forte{color:var(--inchiostro);font-weight:500}
 .hero-pag .lead-forte strong{color:var(--magenta)}
+
+/* ================= aperture delle pagine: titolo a sinistra, testo a destra su schermi larghi ================= */
+@media (min-width:1000px){
+  .hero-pag .wrap{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);column-gap:clamp(40px,6vw,110px);align-items:center}
+  .hero-pag .briciole,.hero-pag .eyebrow{grid-column:1/-1}
+  .hero-pag h1{grid-column:1;grid-row:3/span 4;align-self:center;max-width:none}
+  .hero-pag .lead,.hero-pag .azioni,.hero-pag .extra{grid-column:2;max-width:none}
+  .hero-pag .lead + .lead{margin-top:-6px}
+}

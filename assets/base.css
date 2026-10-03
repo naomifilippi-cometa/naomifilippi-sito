@@ -176,3 +176,5 @@ p{margin:0}
 .opz-prezzo{grid-column:2;justify-self:start;margin-top:6px;font:600 .9rem var(--f-body);color:var(--magenta);background:rgba(142,30,99,.08);border-radius:999px;padding:5px 12px}
 .sez-head h2 em,.opz-testa h3 em{color:var(--magenta)}
 .prezzo-carta{border-top-color:var(--petrolio)}
+.sez-head{max-width:min(100%,64rem)}
+.sez-head .lead{max-width:74ch}

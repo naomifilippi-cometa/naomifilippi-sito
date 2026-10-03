@@ -207,3 +207,51 @@
 .opz-t b{font-family:var(--f-display);font-weight:500;font-size:1.3rem;line-height:1.2}
 .opz-t p{color:var(--inchiostro-2);font-size:.93rem}
 .opz-prezzo{grid-column:2;justify-self:start;margin-top:6px;font:600 .88rem var(--f-body);color:var(--magenta);background:rgba(142,30,99,.08);border-radius:999px;padding:5px 12px}
+
+/* ================= chi sono: formazione ================= */
+.formazione-sez{background:#fff;border-top:1px solid var(--linea-chiara)}
+.formazione-sez .wrap{padding-block:clamp(64px,8vw,110px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(32px,5vw,80px);align-items:center}
+.formazione-testo{display:grid;gap:16px}
+.formazione-testo h2{font-size:clamp(1.9rem,3.6vw,3rem)}
+.formazione-testo h2 em{color:var(--magenta)}
+.formazione-testo p:not(.eyebrow){color:var(--inchiostro-2);font-size:1.05rem}
+.formazione-testo strong{color:var(--inchiostro)}
+.formazione-lista{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.formazione-lista li{display:grid;gap:2px;padding:16px 18px;border-radius:14px;background:var(--avorio);border:1px solid var(--linea-chiara);border-left:3px solid var(--petrolio)}
+.formazione-lista small{font-family:var(--f-mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--petrolio)}
+.formazione-lista b{font-family:var(--f-display);font-weight:500;font-size:1.2rem}
+.formazione-lista span{font-size:.88rem;color:var(--inchiostro-2)}
+.formazione-lista li.aidp{background:linear-gradient(160deg,var(--petrolio),#072E35);border-color:var(--petrolio);color:#F3EAF0}
+.formazione-lista li.aidp small{color:var(--teal-chiaro)}
+.formazione-lista li.aidp span{color:#CFE2E1}
+@media (max-width:900px){.formazione-sez .wrap{grid-template-columns:1fr}}
+
+/* ===== Servizi singoli: testata scura + corpo bianco su fondo pietra (note Naomi, ottobre) ===== */
+.listino-sez{background:var(--velo,#EFEAE4)}
+.srv2-griglia{gap:20px}
+.srv2{display:flex;flex-direction:column;gap:0;padding:0;overflow:hidden;background:#fff;border:0;
+  box-shadow:0 1px 0 rgba(43,13,36,.06),0 18px 40px -30px rgba(43,13,36,.35)}
+.srv2:hover{border-color:transparent;box-shadow:0 1px 0 rgba(43,13,36,.06),0 30px 60px -32px rgba(13,77,87,.55);transform:translateY(-3px)}
+.srv2-testa{position:relative;display:grid;gap:6px;padding:24px 24px 22px;color:#F6EEF2;
+  background:radial-gradient(260px 160px at 100% 0%,rgba(255,255,255,.10),transparent 70%),var(--tinta)}
+.srv2-pet{--tinta:linear-gradient(150deg,#0F5A65,var(--petrolio) 55%,#083A42)}
+.srv2-pro{--tinta:linear-gradient(150deg,#3D1434,var(--prugna) 60%,#1E0819)}
+.srv2-mag{--tinta:linear-gradient(150deg,#9A2A6E,#6E1650 60%,#4A0E36)}
+.srv2-gruppo{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,238,242,.72)}
+.srv2 .srv2-testa h3{font-size:1.6rem;color:#fff;line-height:1.1}
+.srv2-da{font-size:.85rem;color:rgba(246,238,242,.8)}
+.srv2-da b{font-family:var(--f-display);font-weight:500;font-size:1.5rem;color:#fff;margin-left:2px}
+.srv2-corpo{flex:1;display:flex;flex-direction:column;gap:14px;padding:22px 24px 22px}
+.srv2-corpo > p{color:var(--inchiostro-2);font-size:.95rem}
+.srv2-corpo .srv-link{margin-top:auto;padding-top:4px}
+.srv2-prezzi li:first-child{border-top:1px solid var(--linea-chiara)}
+.srv2-mag .srv2-tempo,.srv2-pro .srv2-tempo{color:var(--prugna);background:rgba(142,30,99,.08)}
+.srv2-tempo{align-self:flex-start}
+@media (min-width:680px){.srv2-griglia{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1000px){.srv2-griglia{grid-template-columns:repeat(3,1fr)}.srv2-pk{grid-column:span 2}}
+.srv2-pk{display:flex;flex-direction:column;justify-content:center;gap:14px;padding:clamp(26px,3.4vw,44px);border-radius:var(--r);background:#fff;
+  border-left:4px solid var(--magenta,#8E1E63);box-shadow:0 18px 40px -30px rgba(43,13,36,.35)}
+.srv2-pk h3{font-size:clamp(1.6rem,2.4vw,2.2rem);line-height:1.1}
+.srv2-pk h3 em{color:var(--magenta,#8E1E63)}
+.srv2-pk > p:not(.eyebrow){color:var(--inchiostro-2);max-width:56ch}
+.srv2-pk .azioni{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}

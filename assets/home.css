@@ -493,3 +493,39 @@ tr.hl td small{font-weight:400}
 .metodo{background:var(--avorio)}
 .servizi{background:#fff}
 .faq{background:var(--avorio)}
+.sez-head{max-width:min(100%,64rem)}
+.sez-head .lead{max-width:74ch}
+
+/* ================= home: pain point che si trasformano in soluzione ================= */
+.dolori2{background:#fff;border-bottom:1px solid var(--linea-chiara)}
+.dolori2 .wrap{padding-block:clamp(64px,9vw,130px);display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(36px,6vw,110px)}
+.dol-intro{position:sticky;top:110px;align-self:start;display:grid;gap:20px;justify-items:start}
+.dol-intro h2{font-size:clamp(2rem,4vw,3.3rem)}
+.dol-intro h2 em{color:var(--magenta)}
+.dol-lista{list-style:none;margin:0;padding:0;display:grid}
+.dol-lista li{display:grid;gap:14px;padding-block:clamp(22px,3vw,34px);border-top:1px solid var(--linea-chiara)}
+.dol-lista li:last-child{border-bottom:1px solid var(--linea-chiara)}
+.dol-lista q{font-family:var(--f-display);font-style:italic;font-weight:400;font-size:clamp(1.6rem,2.7vw,2.35rem);line-height:1.22;color:var(--inchiostro);quotes:"«" "»";transition:color .9s ease .15s}
+.dol-lista q span{background:linear-gradient(var(--magenta),var(--magenta)) 0 62%/0% 2px no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size 1s cubic-bezier(.65,0,.35,1) .15s}
+.dol-lista li.on q{color:var(--inchiostro-2)}
+.dol-lista li.on q span{background-size:100% 2px}
+.risposta{display:grid;gap:4px;max-width:46ch;padding-left:18px;border-left:3px solid var(--petrolio);font-size:1.08rem;color:var(--inchiostro)}
+.risposta span{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--petrolio)}
+.js .dol-lista li .risposta{opacity:0;transform:translateY(12px);transition:opacity .7s ease .75s,transform .7s cubic-bezier(.22,1,.36,1) .75s}
+.js .dol-lista li.on .risposta{opacity:1;transform:none}
+@media (max-width:900px){.dolori2 .wrap{grid-template-columns:1fr}.dol-intro{position:static}}
+@media (prefers-reduced-motion:reduce){.dol-lista q span{background-size:0 0}.js .dol-lista li .risposta{opacity:1;transform:none}}
+
+/* ================= perché me: schede che entrano una dopo l'altra, sfalsate ================= */
+.js .perche-griglia > div{opacity:0;transform:translateY(28px) scale(.98);transition:opacity .8s ease,transform .9s cubic-bezier(.22,1,.36,1),border-color .3s,background-color .3s,box-shadow .3s;transition-delay:calc(var(--i) * 110ms)}
+.js .perche-griglia.on > div{opacity:1;transform:none}
+.perche-griglia > div{transition:transform .5s cubic-bezier(.22,1,.36,1),border-color .3s,background-color .3s,box-shadow .3s}
+.perche-griglia > div:hover{background:rgba(255,255,255,.08);border-color:rgba(111,195,195,.45);box-shadow:0 24px 50px -30px rgba(0,0,0,.6)}
+.js .perche-griglia.on > div:hover{transform:translateY(-4px);transition-delay:0s}
+@media (min-width:1101px){
+  .perche-griglia{padding-bottom:36px}
+  .perche-griglia > div:nth-child(3n+2){margin-top:36px;margin-bottom:-36px}
+}
+.perche-griglia .num{transition:-webkit-text-stroke-color .4s}
+.perche-griglia > div:hover .num{-webkit-text-stroke-color:var(--lume-chiaro)}
+@media (prefers-reduced-motion:reduce){.js .perche-griglia > div{opacity:1;transform:none}}
