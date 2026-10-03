@@ -529,3 +529,18 @@ tr.hl td small{font-weight:400}
 .perche-griglia .num{transition:-webkit-text-stroke-color .4s}
 .perche-griglia > div:hover .num{-webkit-text-stroke-color:var(--lume-chiaro)}
 @media (prefers-reduced-motion:reduce){.js .perche-griglia > div{opacity:1;transform:none}}
+
+/* ===== Loghi delle aziende in cui ha lavorato ===== */
+.loghi{background:#fff;border-bottom:1px solid var(--linea-chiara)}
+.loghi .wrap{padding-block:clamp(26px,3.6vw,40px);display:flex;align-items:center;gap:clamp(18px,3vw,48px);flex-wrap:wrap}
+.loghi-tit{flex:0 0 auto;max-width:15rem;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--inchiostro-2);line-height:1.6}
+.loghi-lista{list-style:none;margin:0;padding:0;flex:1;display:flex;align-items:center;justify-content:space-between;gap:clamp(20px,3.4vw,52px);flex-wrap:wrap}
+.loghi-lista li{display:flex;align-items:center;height:44px;opacity:.72;filter:grayscale(1);transition:opacity .3s,filter .3s}
+.loghi-lista li:hover{opacity:1;filter:none}
+.loghi-lista img{height:36px;width:auto;display:block}
+.logo-testo{font-family:var(--f-body,inherit);font-weight:600;font-size:1.06rem;letter-spacing:-.01em;color:var(--prugna);white-space:nowrap}
+@media (max-width:720px){
+  .loghi .wrap{flex-direction:column;align-items:flex-start;gap:16px}
+  .loghi-lista{justify-content:flex-start;gap:14px 28px}
+  .loghi-lista img{height:30px}
+}
