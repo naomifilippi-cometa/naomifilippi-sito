@@ -497,24 +497,41 @@ tr.hl td small{font-weight:400}
 .sez-head .lead{max-width:74ch}
 
 /* ================= home: pain point che si trasformano in soluzione ================= */
-.dolori2{background:#fff;border-bottom:1px solid var(--linea-chiara)}
-.dolori2 .wrap{padding-block:clamp(64px,9vw,130px);display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(36px,6vw,110px)}
-.dol-intro{position:sticky;top:110px;align-self:start;display:grid;gap:20px;justify-items:start}
+.dolori2{background:radial-gradient(700px 500px at 100% 0%,rgba(186,152,186,.35),transparent 65%),var(--velo);border-bottom:1px solid var(--linea-chiara)}
+.dolori2 .wrap{padding-block:clamp(64px,9vw,130px);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(36px,6vw,100px);align-items:start}
+.dol-intro{position:sticky;top:110px;display:grid;gap:20px;justify-items:start}
 .dol-intro h2{font-size:clamp(2rem,4vw,3.3rem)}
 .dol-intro h2 em{color:var(--magenta)}
-.dol-lista{list-style:none;margin:0;padding:0;display:grid}
-.dol-lista li{display:grid;gap:14px;padding-block:clamp(22px,3vw,34px);border-top:1px solid var(--linea-chiara)}
-.dol-lista li:last-child{border-bottom:1px solid var(--linea-chiara)}
-.dol-lista q{font-family:var(--f-display);font-style:italic;font-weight:400;font-size:clamp(1.6rem,2.7vw,2.35rem);line-height:1.22;color:var(--inchiostro);quotes:"«" "»";transition:color .9s ease .15s}
-.dol-lista q span{background:linear-gradient(var(--magenta),var(--magenta)) 0 62%/0% 2px no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size 1s cubic-bezier(.65,0,.35,1) .15s}
-.dol-lista li.on q{color:var(--inchiostro-2)}
-.dol-lista li.on q span{background-size:100% 2px}
-.risposta{display:grid;gap:4px;max-width:46ch;padding-left:18px;border-left:3px solid var(--petrolio);font-size:1.08rem;color:var(--inchiostro)}
-.risposta span{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--petrolio)}
-.js .dol-lista li .risposta{opacity:0;transform:translateY(12px);transition:opacity .7s ease .75s,transform .7s cubic-bezier(.22,1,.36,1) .75s}
-.js .dol-lista li.on .risposta{opacity:1;transform:none}
-@media (max-width:900px){.dolori2 .wrap{grid-template-columns:1fr}.dol-intro{position:static}}
-@media (prefers-reduced-motion:reduce){.dol-lista q span{background-size:0 0}.js .dol-lista li .risposta{opacity:1;transform:none}}
+/* conversazione: la frase di chi cerca lavoro e la risposta di Naomi */
+.chat{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);border-radius:28px;padding:clamp(16px,2.4vw,28px);box-shadow:0 30px 70px -45px rgba(63,3,21,.45);backdrop-filter:blur(6px)}
+.chat-testa{display:flex;align-items:center;gap:12px;padding:4px 4px 16px;margin-bottom:6px;border-bottom:1px solid var(--linea-chiara)}
+.chat-testa img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.chat-testa b{display:block;font-weight:600;font-size:.98rem}
+.chat-testa span{font-size:.82rem;color:var(--inchiostro-2)}
+.chat-lista{list-style:none;margin:0;padding:0;display:grid;gap:clamp(20px,2.6vw,30px);padding-top:16px}
+.chat-coppia{display:grid;gap:10px}
+.bolla{margin:0;max-width:88%;border-radius:22px;padding:14px 18px 16px}
+.bolla .chi{display:block;font-family:var(--f-mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+.bolla-tu{justify-self:start;background:#fff;border-bottom-left-radius:6px;font-family:var(--f-display);font-style:italic;font-size:clamp(1.25rem,2vw,1.6rem);line-height:1.25;color:var(--inchiostro);box-shadow:0 10px 24px -20px rgba(63,3,21,.5)}
+.bolla-tu .chi{font-style:normal;color:var(--teal)}
+.bolla-naomi{justify-self:end;background:linear-gradient(150deg,var(--prugna-2),var(--prugna));color:var(--testo);border-bottom-right-radius:6px;display:grid;gap:10px}
+.bolla-naomi .chi{color:var(--lume-chiaro);margin:0}
+.bolla-naomi p{margin:0;font-size:.98rem;line-height:1.55}
+.bolla-naomi a{justify-self:start;color:#fff;font-weight:600;font-size:.88rem;text-decoration:none;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);transition:background .25s}
+.bolla-naomi a:hover{background:rgba(255,255,255,.22)}
+.bolla-scrive{display:none}
+/* comparsa: prima la frase, poi "sta scrivendo", poi la risposta */
+.js .chat-coppia .bolla-tu{opacity:0;transform:translateY(14px) scale(.98);transform-origin:left bottom;transition:opacity .5s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+.js .chat-coppia .bolla-naomi{opacity:0;transform:translateY(14px) scale(.98);transform-origin:right bottom;transition:opacity .5s ease 1.25s,transform .6s cubic-bezier(.22,1,.36,1) 1.25s}
+.js .chat-coppia .bolla-scrive{display:flex;justify-self:end;gap:4px;padding:12px 14px;border-radius:16px;background:var(--prugna);opacity:0;height:0;padding-block:0;overflow:hidden}
+.js .chat-coppia.on .bolla-tu,.js .chat-coppia.on .bolla-naomi{opacity:1;transform:none}
+.js .chat-coppia.on .bolla-scrive{animation:scrive 1.2s ease .35s both}
+.bolla-scrive i{width:6px;height:6px;border-radius:50%;background:var(--lume-chiaro);animation:punto 1s infinite}
+.bolla-scrive i:nth-child(2){animation-delay:.15s}.bolla-scrive i:nth-child(3){animation-delay:.3s}
+@keyframes scrive{0%{opacity:0;height:0;padding-block:0}15%,80%{opacity:1;height:30px;padding-block:12px}100%{opacity:0;height:0;padding-block:0;margin-top:-10px}}
+@keyframes punto{0%,100%{opacity:.35;transform:none}50%{opacity:1;transform:translateY(-2px)}}
+@media (max-width:900px){.dolori2 .wrap{grid-template-columns:1fr}.dol-intro{position:static}.bolla{max-width:94%}}
+@media (prefers-reduced-motion:reduce){.js .chat-coppia .bolla-tu,.js .chat-coppia .bolla-naomi{opacity:1;transform:none;transition:none}.js .chat-coppia .bolla-scrive{display:none}}
 
 /* ================= perché me: schede che entrano una dopo l'altra, sfalsate ================= */
 .js .perche-griglia > div{opacity:0;transform:translateY(28px) scale(.98);transition:opacity .8s ease,transform .9s cubic-bezier(.22,1,.36,1),border-color .3s,background-color .3s,box-shadow .3s;transition-delay:calc(var(--i) * 110ms)}

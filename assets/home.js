@@ -91,7 +91,7 @@
   });
 
   /* ---------- pain point e "perché me": comparsa delicata quando entrano nello schermo ---------- */
-  var daMostrare = document.querySelectorAll('.dol-lista li, .perche-griglia');
+  var daMostrare = document.querySelectorAll('.chat-coppia, .perche-griglia');
   if (daMostrare.length) {
     if ('IntersectionObserver' in window && !reduce) {
       var vis = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('on'); vis.unobserve(e.target); } }); }, { threshold: .45, rootMargin: '0px 0px -8% 0px' });
