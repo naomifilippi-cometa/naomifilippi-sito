@@ -270,7 +270,7 @@
   function punto(t) { var u = 1 - t, x0 = -.1 * W, y0 = H * .9, x1 = W * .35, y1 = H * .85, x2 = W * .7, y2 = H * .3, x3 = W * 1.1, y3 = H * .05; return { x: u * u * u * x0 + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t * x3, y: u * u * u * y0 + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y3 }; }
   function disegna(ms) {
     var t = (ms || 0) / 1000; ctx.clearRect(0, 0, W, H);
-    luci.forEach(function (l) { var a = riduci ? l.a : l.a * (.55 + .45 * Math.sin(t * 1.4 + l.f)); ctx.fillStyle = l.rosa ? 'rgba(242,154,198,' + a + ')' : 'rgba(214,240,238,' + a + ')'; ctx.beginPath(); ctx.arc(l.x, l.y, l.r, 0, 6.283); ctx.fill(); });
+    luci.forEach(function (l) { var a = riduci ? l.a : l.a * (.55 + .45 * Math.sin(t * 1.4 + l.f)); ctx.fillStyle = l.rosa ? 'rgba(215,198,216,' + a + ')' : 'rgba(230,224,230,' + a + ')'; ctx.beginPath(); ctx.arc(l.x, l.y, l.r, 0, 6.283); ctx.fill(); });
     var testa = riduci ? .7 : Math.min(1.1, (t % 10) / 7.5), N = 36;
     for (var j = 0; j < N; j++) {
       var t0 = testa - .28 * (j + 1) / N, t1 = testa - .28 * j / N; if (t1 <= 0 || t0 >= 1) continue;
@@ -278,7 +278,7 @@
       ctx.strokeStyle = 'rgba(' + Math.round(111 + 131 * k2) + ',' + Math.round(195 - 41 * k2) + ',' + Math.round(195 + 3 * k2) + ',' + (k2 * k2 * .9) + ')';
       ctx.lineWidth = .8 + 3.6 * k2 * k2; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(a0.x, a0.y); ctx.lineTo(b0.x, b0.y); ctx.stroke();
     }
-    if (testa <= 1) { var h = punto(testa), g = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, 40); g.addColorStop(0, 'rgba(255,236,246,.9)'); g.addColorStop(.3, 'rgba(242,154,198,.45)'); g.addColorStop(1, 'rgba(214,51,132,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(h.x, h.y, 40, 0, 6.283); ctx.fill(); }
+    if (testa <= 1) { var h = punto(testa), g = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, 40); g.addColorStop(0, 'rgba(252,239,244,.9)'); g.addColorStop(.3, 'rgba(215,198,216,.45)'); g.addColorStop(1, 'rgba(162,69,106,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(h.x, h.y, 40, 0, 6.283); ctx.fill(); }
     if (!riduci) requestAnimationFrame(disegna);
   }
   misura(); addEventListener('resize', function () { misura(); if (riduci) disegna(0); });

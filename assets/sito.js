@@ -119,7 +119,7 @@
       (function (W, A, L) { var p = function (a, ar) { a.q.push(ar); }; var d = W.document; W.Cal = W.Cal || function () { var c = W.Cal, ar = arguments; if (!c.loaded) { c.ns = {}; c.q = c.q || []; d.head.appendChild(d.createElement('script')).src = A; c.loaded = true; } if (ar[0] === L) { var api = function () { p(api, arguments); }, ns = ar[1]; api.q = api.q || []; if (typeof ns === 'string') { c.ns[ns] = c.ns[ns] || api; p(c.ns[ns], ar); p(c, ['initNamespace', ns]); } else p(c, ar); return; } p(c, ar); }; })(window, url.origin.replace('://cal.com', '://app.cal.com') + '/embed/embed.js', 'init');
       Cal('init', 'call', { origin: url.origin });
       Cal.ns.call('inline', { elementOrSelector: '#cal-inline', calLink: link, config: { layout: 'month_view', theme: 'light' } });
-      Cal.ns.call('ui', { theme: 'light', hideEventTypeDetails: false, layout: 'month_view', cssVarsPerTheme: { light: { 'cal-brand': '#B42A72' } } });
+      Cal.ns.call('ui', { theme: 'light', hideEventTypeDetails: false, layout: 'month_view', cssVarsPerTheme: { light: { 'cal-brand': '#9C4263' } } });
       Cal.ns.call('on', { action: 'linkReady', callback: function () { var a = box.querySelector('.cal-attesa'); if (a) a.remove(); } });
       setTimeout(function () { var a = box.querySelector('.cal-attesa'); if (a) a.remove(); }, 8000);
     });

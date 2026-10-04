@@ -1,5 +1,5 @@
 /* Sezione "negoziazione" con calcolatore, usata anche nella pagina del servizio (stacco scuro) */
-.nego{--testo:#F3EAF0;--testo-2:#C9B6C3;--linea:rgba(243,234,240,.14);color:var(--testo)}
+.nego{--testo:#F4EAF0;--testo-2:#CDB9C8;--linea:rgba(244,234,240,.14);color:var(--testo)}
 .nego .eyebrow{color:var(--lume-chiaro)}
 .nego .lead{color:var(--testo-2)}
 .nego h2{font-size:clamp(1.9rem,3.6vw,3rem)}
@@ -11,11 +11,11 @@
 
 /* ---------- negoziazione ---------- */
 .nego{background:
-  radial-gradient(700px 420px at 90% 20%, rgba(214,51,132,.28), transparent 65%),
+  radial-gradient(700px 420px at 90% 20%, rgba(162,69,106,.28), transparent 65%),
   var(--prugna)}
 .nego .wrap{padding-block:clamp(72px,9vw,120px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
 .nego .legge{margin-top:18px;padding:14px 16px;border-left:2px solid var(--lume);background:rgba(255,255,255,.04);font-size:.93rem;color:var(--testo-2);border-radius:0 8px 8px 0}
-.calc{background:rgba(20,6,15,.6);border:1px solid var(--linea);border-radius:var(--r);padding:clamp(22px,3vw,34px);display:grid;gap:20px}
+.calc{background:rgba(28,1,9,.6);border:1px solid var(--linea);border-radius:var(--r);padding:clamp(22px,3vw,34px);display:grid;gap:20px}
 .calc label{display:grid;gap:8px;font-size:.9rem;color:var(--testo-2)}
 .calc .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .calc output,.calc .val{font-family:var(--f-mono);color:#fff;font-variant-numeric:tabular-nums}
