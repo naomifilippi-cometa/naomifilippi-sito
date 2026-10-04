@@ -99,61 +99,118 @@
     } else daMostrare.forEach(function (el) { el.classList.add('on'); });
   }
 
-  /* ---------- hero: cielo stellato e cometa ---------- */
+  /* ---------- hero: cielo e cometa ----------
+     Una cometa attraversa l'apertura lungo un arco ampio, con coda affusolata,
+     polvere luminosa che si stacca e resta qualche secondo, e un cielo leggero
+     che segue appena il puntatore. Si ferma quando l'apertura non è visibile. */
   var cv = document.getElementById('cielo');
   if (!cv) return;
-  var ctx = cv.getContext('2d'), W, H, dpr, luci = [];
+  var sopra = document.createElement('canvas'); sopra.className = 'cometa-sopra'; sopra.setAttribute('aria-hidden','true'); cv.parentNode.appendChild(sopra);
+  var cielo = cv.getContext('2d'), cx2 = sopra.getContext('2d'), ctx = cielo, W = 0, H = 0, dpr = 1, stelle = [], scintille = [], polvere = [], CP = [];
+  var mx = 0, my = 0, px = 0, py = 0, attiva = true, rafId = 0, inizio = 0;
+  var GIRO = 11, VOLO = 4.6, RITARDO = .6;        /* secondi: ciclo, durata del passaggio, attesa iniziale */
+  var BORD = '110,18,50', MALVA = '162,69,106', LILLA = '186,152,186', CHIARO = '252,243,248';
+
+  function ease(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+  function percorso(){ /* sale nello spazio libero accanto alla foto, ne sfiora la parte alta ed esce in alto a destra */
+    var f = document.querySelector('.hero-foto'), r0 = cv.getBoundingClientRect(), r = f ? f.getBoundingClientRect() : null;
+    if (!r){ CP = [[-.1*W,H*.86],[W*.28,H*1.02],[W*.5,H*.18],[W*1.1,H*.04]]; return; }
+    var L = r.left - r0.left, T = r.top - r0.top, w = r.width, h = r.height, largo = W >= 900;
+    CP = largo ? [[L-46, T+h*.98],[L-30, T+h*.45],[L+w*.04, T+h*.10],[L+w*.36, T-h*.30]]
+               : [[-30, T+h*.10],[W*.30, T-h*.02],[W*.62, T-h*.10],[W+60, T-h*.24]];
+  }
+  function pt(t){
+    var u = 1-t, a = CP[0], b = CP[1], c = CP[2], d = CP[3];
+    return {x:u*u*u*a[0]+3*u*u*t*b[0]+3*u*t*t*c[0]+t*t*t*d[0], y:u*u*u*a[1]+3*u*u*t*b[1]+3*u*t*t*c[1]+t*t*t*d[1]};
+  }
   function size(){
-    dpr = Math.min(2, devicePixelRatio || 1);
+    dpr = Math.min(2, window.devicePixelRatio || 1);
     W = cv.offsetWidth; H = cv.offsetHeight;
-    cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-    luci = []; var n = Math.round(W*H/15000);
-    for (var i=0;i<n;i++) luci.push({x:Math.random()*W, y:Math.random()*H, r:Math.random()*2.2+.4, a:Math.random()*.55+.15, v:Math.random()*10+4, f:Math.random()*6.28, rosa:Math.random()<.35, bokeh:Math.random()<.08});
+    [cv, sopra].forEach(function(c){ c.width = Math.round(W*dpr); c.height = Math.round(H*dpr); c.getContext('2d').setTransform(dpr,0,0,dpr,0,0); });
+    percorso();
+    stelle = []; scintille = [];
+    var n = Math.round(W*H/16000);
+    for (var i=0;i<n;i++) stelle.push({x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.3+.35, a:Math.random()*.35+.12, f:Math.random()*6.28, v:Math.random()*.8+.4, z:Math.random()*.8+.2, c:Math.random()<.5 ? MALVA : LILLA});
+    var m = W < 700 ? 3 : 6;
+    for (var j=0;j<m;j++) scintille.push({x:Math.random()*W, y:Math.random()*H*.85, r:Math.random()*5+5, f:Math.random()*6.28, z:Math.random()*.6+.4});
   }
-  function pt(t){ /* il percorso: dal basso a sinistra all'alto a destra */
-    var x0=-.05*W, y0=H*1.02, x1=W*.42, y1=H*.95, x2=W*.72, y2=H*.35, x3=W*1.05, y3=H*.02, u=1-t;
-    return {x:u*u*u*x0+3*u*u*t*x1+3*u*t*t*x2+t*t*t*x3, y:u*u*u*y0+3*u*u*t*y1+3*u*t*t*y2+t*t*t*y3};
+  function sparkle(x, y, r, a, rot){ /* stellina a quattro punte */
+    ctx.save(); ctx.translate(x,y); ctx.rotate(rot||0); ctx.globalAlpha = a;
+    var g = ctx.createRadialGradient(0,0,0,0,0,r);
+    g.addColorStop(0,'rgba('+CHIARO+',1)'); g.addColorStop(.35,'rgba('+LILLA+',.8)'); g.addColorStop(1,'rgba('+LILLA+',0)');
+    ctx.fillStyle = g; ctx.beginPath();
+    for (var k=0;k<4;k++){ var an=k*Math.PI/2; ctx.lineTo(Math.cos(an)*r, Math.sin(an)*r); ctx.lineTo(Math.cos(an+Math.PI/4)*r*.18, Math.sin(an+Math.PI/4)*r*.18); }
+    ctx.closePath(); ctx.fill(); ctx.restore();
   }
-  function glow(x,y,r,a){
-    var g = ctx.createRadialGradient(x,y,0,x,y,r);
-    g.addColorStop(0,'rgba(162,69,106,'+a+')'); g.addColorStop(.3,'rgba(215,198,216,'+(a*.45)+')'); g.addColorStop(1,'rgba(215,198,216,0)');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x,y,r,0,6.283); ctx.fill();
+  function nastro(t, lung, larg, colori){ /* coda affusolata disegnata come un nastro lungo il percorso */
+    var N = 46, sx = [], dx = [], testa = pt(t), fine = pt(Math.max(0, t-lung));
+    for (var i=0;i<=N;i++){
+      var u = i/N, tt = t - lung*u; if (tt < 0) tt = 0;
+      var a = pt(tt), b = pt(Math.max(0, tt-.002)), nx = a.y-b.y, ny = b.x-a.x, l = Math.hypot(nx,ny) || 1;
+      var w = larg*Math.pow(1-u,1.6) + .2;
+      sx.push([a.x+nx/l*w, a.y+ny/l*w]); dx.push([a.x-nx/l*w, a.y-ny/l*w]);
+    }
+    var g = ctx.createLinearGradient(testa.x, testa.y, fine.x, fine.y);
+    colori.forEach(function(c){ g.addColorStop(c[0], c[1]); });
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(sx[0][0], sx[0][1]);
+    for (var k=1;k<sx.length;k++) ctx.lineTo(sx[k][0], sx[k][1]);
+    for (var h=dx.length-1;h>=0;h--) ctx.lineTo(dx[h][0], dx[h][1]);
+    ctx.closePath(); ctx.fill();
   }
   function frame(ms){
-    var time = (ms||0)/1000;
-    ctx.clearRect(0,0,W,H);
-    luci.forEach(function(l){
-      var y = reduce ? l.y : ((l.y - time*l.v) % H + H) % H;
-      var x = l.x + (reduce ? 0 : Math.sin(time*.6 + l.f)*8);
-      var a = reduce ? l.a : l.a*(.55+.45*Math.sin(time*1.3 + l.f));
-      if (l.bokeh){
-        var g = ctx.createRadialGradient(x,y,0,x,y,l.r*9);
-        g.addColorStop(0, l.rosa ? 'rgba(215,198,216,'+(a*.35)+')' : 'rgba(186,152,186,'+(a*.35)+')'); g.addColorStop(1,'rgba(0,0,0,0)');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x,y,l.r*9,0,6.283); ctx.fill();
-      } else {
-        ctx.fillStyle = l.rosa ? 'rgba(162,69,106,'+(a*.55)+')' : 'rgba(122,84,112,'+(a*.45)+')';
-        ctx.beginPath(); ctx.arc(x,y,l.r,0,6.283); ctx.fill();
+    if (!inizio) inizio = ms || 1;
+    var time = ((ms||0) - inizio)/1000, dt = 1/60;
+    px += (mx-px)*.04; py += (my-py)*.04;
+    cielo.clearRect(0,0,W,H); cx2.clearRect(0,0,W,H); ctx = cielo;
+    /* cielo */
+    for (var i=0;i<stelle.length;i++){
+      var s = stelle[i], a = reduce ? s.a : s.a*(.55+.45*Math.sin(time*s.v + s.f));
+      ctx.fillStyle = 'rgba('+s.c+','+a+')';
+      ctx.beginPath(); ctx.arc(s.x + px*12*s.z, s.y + py*8*s.z, s.r, 0, 6.283); ctx.fill();
+    }
+    for (var j=0;j<scintille.length;j++){
+      var c = scintille[j], pulse = reduce ? .6 : .35 + .65*Math.pow(.5+.5*Math.sin(time*.7 + c.f), 3);
+      sparkle(c.x + px*18*c.z, c.y + py*12*c.z, c.r*(.7+.3*pulse), .55*pulse, time*.15 + c.f);
+    }
+    /* cometa, sopra i contenuti */
+    ctx = cx2;
+    var ciclo = reduce ? VOLO*.62 : (time - RITARDO) % GIRO, t = ciclo/VOLO;
+    if (ciclo >= 0 && t <= 1.05){
+      var tt = ease(Math.min(1, Math.max(0, t))), testa = pt(tt);
+      var entra = Math.min(1, t*6), esce = Math.min(1, (1.05-t)*8), f = Math.max(0, Math.min(entra, esce));
+      var lung = .26*Math.min(1, tt*3 + .15);
+      nastro(tt, lung, 20, [[0,'rgba('+LILLA+','+(.32*f)+')'],[.5,'rgba('+LILLA+','+(.10*f)+')'],[1,'rgba('+LILLA+',0)']]);
+      nastro(tt, lung*.92, 5.4, [[0,'rgba('+CHIARO+','+(.95*f)+')'],[.12,'rgba('+MALVA+','+(.75*f)+')'],[.5,'rgba('+BORD+','+(.35*f)+')'],[1,'rgba('+BORD+',0)']]);
+      var g = ctx.createRadialGradient(testa.x,testa.y,0,testa.x,testa.y,70);
+      g.addColorStop(0,'rgba('+MALVA+','+(.30*f)+')'); g.addColorStop(.4,'rgba('+LILLA+','+(.16*f)+')'); g.addColorStop(1,'rgba('+LILLA+',0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(testa.x,testa.y,70,0,6.283); ctx.fill();
+      sparkle(testa.x, testa.y, 28 + (reduce ? 0 : 4*Math.sin(time*9)), f, time*.8);
+      ctx.fillStyle = 'rgba(255,255,255,'+f+')'; ctx.beginPath(); ctx.arc(testa.x,testa.y,3.6,0,6.283); ctx.fill();
+      if (!reduce && t < 1){ /* polvere che si stacca dalla testa */
+        var dietro = pt(Math.max(0, tt-.01)), vx = testa.x-dietro.x, vy = testa.y-dietro.y, vl = Math.hypot(vx,vy) || 1;
+        for (var q=0;q<3;q++) polvere.push({x:testa.x, y:testa.y, vx:-vx/vl*(Math.random()*22+8) + (Math.random()-.5)*10, vy:-vy/vl*(Math.random()*22+8) + (Math.random()-.5)*10,
+          r:Math.random()*1.5+.4, vita:0, max:Math.random()*1.2+.9, c:Math.random()<.35 ? CHIARO : (Math.random()<.5 ? MALVA : LILLA)});
       }
-    });
-    /* la cometa: coda che sfuma dal teal al rosa, scintille dietro la testa */
-    var head = reduce ? .72 : Math.min(1.08, (time % 12) / 9);
-    var fade = reduce ? 1 : Math.min(1, Math.max(0, (12 - (time % 12)) / 1.5));
-    var L = .3, N = 40;
-    for (var j=0;j<N;j++){
-      var t0 = head - L*(j+1)/N, t1 = head - L*j/N;
-      if (t1 <= 0 || t0 >= 1) continue;
-      var a0 = pt(Math.max(0,t0)), b0 = pt(Math.min(1,t1)), k = 1 - j/N;
-      ctx.strokeStyle = 'rgba('+Math.round(186-24*k)+','+Math.round(152-83*k)+','+Math.round(186-80*k)+','+(k*k*.75*fade)+')';
-      ctx.lineWidth = .8 + 4.2*k*k; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(a0.x,a0.y); ctx.lineTo(b0.x,b0.y); ctx.stroke();
     }
-    if (head <= 1){
-      var h = pt(head), pulse = reduce ? 1 : (.9 + .1*Math.sin(time*3));
-      glow(h.x, h.y, 60*pulse, .22*fade);
-      glow(h.x, h.y, 12, .95*fade);
+    for (var d=polvere.length-1;d>=0;d--){
+      var p = polvere[d]; p.vita += dt; if (p.vita > p.max){ polvere.splice(d,1); continue; }
+      p.x += p.vx*dt; p.y += p.vy*dt; p.vx *= .985; p.vy *= .985;
+      var al = Math.sin(Math.PI * p.vita/p.max) * .85;
+      ctx.fillStyle = 'rgba('+p.c+','+al+')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
     }
-    if (!reduce) requestAnimationFrame(frame);
+    if (!reduce && attiva) rafId = requestAnimationFrame(frame);
   }
-  function parti(){ size(); addEventListener('resize', function(){ size(); if (reduce) frame(0); }); frame(0); if (!reduce) requestAnimationFrame(frame); }
+  function avvia(){ if (!reduce && !rafId) rafId = requestAnimationFrame(frame); }
+  function ferma(){ if (rafId) cancelAnimationFrame(rafId); rafId = 0; }
+  function parti(){
+    size();
+    var t; addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(function(){ size(); if (reduce) frame(0); }, 150); });
+    if (!reduce){
+      cv.parentNode.addEventListener('pointermove', function(e){ var r = cv.getBoundingClientRect(); mx = (e.clientX - r.left)/r.width - .5; my = (e.clientY - r.top)/r.height - .5; });
+      if ('IntersectionObserver' in window) new IntersectionObserver(function(v){ attiva = v[0].isIntersecting && !document.hidden; attiva ? avvia() : ferma(); }).observe(cv);
+      document.addEventListener('visibilitychange', function(){ attiva = !document.hidden; attiva ? avvia() : ferma(); });
+      avvia();
+    } else frame(0);
+  }
   if (document.prerendering) document.addEventListener('prerenderingchange', parti, {once:true}); else parti();
 })();
