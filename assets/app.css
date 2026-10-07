@@ -270,3 +270,33 @@ body.app{background:var(--avorio);min-height:100vh;min-height:100svh}
 /* intestazione: nome e sottotitolo su due righe */
 .app-top .logo > div b{display:block;font-family:var(--f-display);font-style:italic;font-weight:500;font-size:1.35rem;line-height:1;white-space:nowrap}
 .app-top .logo > div span{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--testo-2);margin-top:6px;white-space:nowrap}
+
+/* ===== Gestionale: clienti fuori piattaforma e servizi ===== */
+.kpi.kpi-5{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:1100px){.kpi.kpi-5{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.kpi.kpi-5{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.anima .kpi > div:nth-child(5){animation-delay:.24s}
+.pannello > header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.btn-piccolo{min-height:40px;padding:0 16px;font-size:.88rem}
+.nuovo-cliente{display:grid;gap:14px;padding:18px;border-radius:14px;background:var(--avorio);border:1px solid var(--linea-chiara)}
+.nuovo-cliente[hidden]{display:none}
+.azioni-form{display:flex;flex-wrap:wrap;gap:10px}
+.tag-est{display:inline-block;vertical-align:middle;margin-left:4px;font:500 .64rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--teal);background:rgba(186,152,186,.18);border-radius:999px;padding:3px 8px;white-space:nowrap}
+.scheda-top .tag-est{margin:4px 0 0}
+.info-serv{margin-top:4px}
+.info-serv .urgente{color:var(--errore);font-weight:600}
+.serv-lista{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.serv-card{border:1px solid var(--linea-chiara);border-radius:14px;padding:14px 16px;display:grid;gap:12px;background:#fff}
+.serv-testa{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.serv-testa b{font-size:1.02rem;margin-right:auto}
+.serv-campi{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:10px}
+.serv-piede{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.serv-lista.cliente .serv-card{gap:6px}
+.serv-agg{margin:0;padding:10px 12px;border-radius:10px;background:var(--avorio);font-size:.94rem}
+.pill.da-iniziare{color:var(--inchiostro-2)}.pill.in-corso{color:var(--petrolio)}.pill.in-revisione{color:var(--attenzione)}
+.pill.consegnato{color:var(--ok)}.pill.chiuso{color:var(--inchiostro-2);opacity:.75}
+.pill.da-pagare{color:var(--errore)}.pill.acconto{color:var(--attenzione)}.pill.saldato{color:var(--ok)}
+.pericolo-btn{justify-self:start;color:var(--errore);border-color:rgba(153,56,92,.35)}
+.pericolo-btn:hover{background:rgba(153,56,92,.06)}
+.kpi b.euro{font-size:clamp(1.5rem,2.2vw,2.2rem);white-space:nowrap}
+@media (max-width:760px){.kpi.kpi-5 > div:last-child{grid-column:span 2}}

@@ -49,6 +49,7 @@
       '<div class="saluto"><div style="display:grid;gap:8px"><p class="eyebrow">Area clienti</p><h1 id="ciao"></h1><p class="lead" id="sotto-ciao"></p></div><span id="stato-pill"></span></div>' +
       '<nav class="salti" aria-label="Vai a"><a href="#p-percorso">Percorso</a><a href="#p-documenti">Documenti</a><a href="#p-messaggi">Messaggi <span id="salto-badge"></span></a><a href="#p-profilo">Profilo</a></nav>' +
       '<div class="griglia-app"><div class="colonna">' +
+      '<section class="pannello" id="p-servizi" hidden><header><h2>I tuoi servizi</h2><span class="sotto">Aggiornati da Naomi</span></header><ul class="serv-lista cliente" id="servizi"></ul></section>' +
       '<section class="pannello" id="p-percorso"><header><h2>Il tuo percorso</h2><span class="sotto" id="servizio"></span></header><ol class="percorso disegna" id="percorso"></ol><div id="appunt"></div></section>' +
       '<section class="pannello" id="p-documenti"><header><h2>Documenti</h2><span class="sotto">Li vediamo solo tu e io</span></header><div id="drop"></div><div id="docs"></div></section>' +
       '</div><div class="colonna">' +
@@ -145,8 +146,15 @@
   async function disegna() {
     var nuovo = await NF.mioProfilo(); if (nuovo) io = Object.assign(io || {}, nuovo);
     intestazione();
-    var res = await Promise.all([NF.documenti(io.id), NF.commenti(io.id), NF.appuntamenti(io.id)]);
-    var docs = res[0], msg = res[1], app = res[2];
+    var res = await Promise.all([NF.documenti(io.id), NF.commenti(io.id), NF.appuntamenti(io.id), NF.servizi(io.id)]);
+    var docs = res[0], msg = res[1], app = res[2], serv = res[3];
+    var ps = document.getElementById('p-servizi');
+    ps.hidden = !serv.length;
+    document.getElementById('servizi').innerHTML = serv.map(function (x) {
+      return '<li class="serv-card"><div class="serv-testa"><b>' + esc(x.servizio) + '</b><span class="pill ' + esc(x.stato.replace(/ /g, '-')) + '">' + esc(x.stato) + '</span></div>' +
+        ((x.scadenza && ['consegnato', 'chiuso'].indexOf(x.stato) < 0) ? '<span class="sotto">Consegna prevista: ' + esc(NF.fmtData.format(new Date(x.scadenza + 'T00:00:00'))) + '</span>' : '') +
+        (x.aggiornamento ? '<p class="serv-agg">' + esc(x.aggiornamento) + '</p>' : '') + '</li>';
+    }).join('');
     var box = document.getElementById('docs');
     box.innerHTML = UI.righeDocumenti(docs, { vuoto: 'Nessun documento. Carica il tuo CV attuale per iniziare.', eliminaTutti: false });
     UI.collegaDocumenti(box, docs, { commenta: function (d) { composerApi.riferisci(d); }, aggiorna: disegna });

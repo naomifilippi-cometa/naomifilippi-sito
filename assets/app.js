@@ -33,6 +33,11 @@
   var TAPPE = ['Ascolto', 'Posizionamento', 'Colloqui', 'Offerta e firma'];
   var FASI = { neolaureato: 'Neolaureato', crescita: 'In crescita', cambio: 'Cambio carriera', senior: 'Senior / Executive' };
   var SERVIZI = ['Pacchetto Base', 'Ascesa', 'Costellazione', 'Curriculum', 'Profilo LinkedIn', 'Cover letter', 'Orientamento', 'Cerchiamo lavoro insieme', 'Simulazione colloquio', "Negoziazione dell'offerta"];
+  var STATI_SERVIZIO = ['da iniziare', 'in corso', 'in revisione', 'consegnato', 'chiuso'];
+  var FONTI = ['Sito', 'Passaparola', 'LinkedIn', 'Instagram', 'Altra piattaforma', 'Azienda', 'Altro'];
+  function pagamento(s) { var p = +s.prezzo || 0, i = +s.incassato || 0; if (!p) return i ? 'saldato' : ''; return i <= 0 ? 'da pagare' : (i < p ? 'acconto' : 'saldato'); }
+  var fmtEuro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
+  function euro(n) { return fmtEuro.format(+n || 0).replace(',00', ''); }
   var TIPI_OK = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.oasis.opendocument.text', 'text/plain', 'image/jpeg', 'image/png', 'image/webp'];
   function controllaFile(f) {
     var max = (C.MAX_FILE_MB || 20) * 1048576;
@@ -55,7 +60,18 @@
       { id: 'c2', email: 'marco.bianchi@example.com', nome: 'Marco Bianchi', telefono: '347 555 0101', obiettivo: 'Ruolo da Operations Director in una multinazionale del Nord Italia', fase: 'senior', servizio: 'Costellazione', stato: 'attivo', passo: 1, avatar_url: '', creato_il: t(9 * G), aggiornato_il: t(5 * H) },
       { id: 'c3', email: 'giulia.neri@example.com', nome: 'Giulia Neri', telefono: '', obiettivo: 'Primo ruolo in marketing digitale dopo la laurea magistrale', fase: 'neolaureato', servizio: 'Pacchetto Base', stato: 'attivo', passo: 3, avatar_url: '', creato_il: t(34 * G), aggiornato_il: t(26 * H) },
       { id: 'c4', email: 'luca.ferri@example.com', nome: 'Luca Ferri', telefono: '340 777 8899', obiettivo: 'Negoziare l\'offerta ricevuta da una società di consulenza', fase: 'crescita', servizio: "Negoziazione dell'offerta", stato: 'concluso', passo: 4, avatar_url: '', creato_il: t(60 * G), aggiornato_il: t(40 * G) },
-      { id: 'c5', email: 'sara.conti@example.com', nome: 'Sara Conti', telefono: '', obiettivo: '', fase: null, servizio: null, stato: 'nuovo', passo: 0, avatar_url: '', creato_il: t(3 * H), aggiornato_il: t(3 * H) }
+      { id: 'c5', email: 'sara.conti@example.com', nome: 'Sara Conti', telefono: '', obiettivo: '', fase: null, servizio: null, stato: 'nuovo', passo: 0, avatar_url: '', creato_il: t(3 * H), aggiornato_il: t(3 * H) },
+      { id: 'c6', email: 'paolo.verdi@example.com', nome: 'Paolo Verdi', telefono: '335 444 1212', obiettivo: 'Passare a un ruolo da Project Manager in ambito energia', fase: 'cambio', servizio: 'Curriculum', stato: 'attivo', passo: 1, avatar_url: '', esterno: true, fonte: 'Passaparola', creato_il: t(8 * G), aggiornato_il: t(1 * G) },
+      { id: 'c7', email: '', nome: 'Chiara Longo', telefono: '320 987 6543', obiettivo: '', fase: 'neolaureato', servizio: 'Simulazione colloquio', stato: 'attivo', passo: 2, avatar_url: '', esterno: true, fonte: 'Altra piattaforma', creato_il: t(4 * G), aggiornato_il: t(10 * H) }
+    ],
+    servizi: [
+      { id: 's1', cliente_id: 'c1', servizio: 'Curriculum', stato: 'consegnato', scadenza: null, prezzo: 229, incassato: 229, aggiornamento: 'Versione finale consegnata in PDF e su Canva.', creato_il: t(20 * G), aggiornato_il: t(12 * G) },
+      { id: 's2', cliente_id: 'c1', servizio: 'Profilo LinkedIn', stato: 'in revisione', scadenza: giorno(3, 0).slice(0, 10), prezzo: 190, incassato: 95, aggiornamento: 'Testi inviati: aspetto le tue modifiche.', creato_il: t(12 * G), aggiornato_il: t(6 * G) },
+      { id: 's3', cliente_id: 'c1', servizio: 'Simulazione colloquio', stato: 'da iniziare', scadenza: giorno(2, 0).slice(0, 10), prezzo: 139, incassato: 0, aggiornamento: '', creato_il: t(6 * G), aggiornato_il: t(6 * G) },
+      { id: 's4', cliente_id: 'c2', servizio: 'Costellazione', stato: 'in corso', scadenza: giorno(25, 0).slice(0, 10), prezzo: 1390, incassato: 463.33, aggiornamento: 'Prima rata ricevuta. Lavoro sul CV executive.', creato_il: t(9 * G), aggiornato_il: t(5 * H) },
+      { id: 's5', cliente_id: 'c6', servizio: 'Curriculum', stato: 'in corso', scadenza: giorno(1, 0).slice(0, 10), prezzo: 229, incassato: 0, aggiornamento: 'Bozza in arrivo domani.', creato_il: t(8 * G), aggiornato_il: t(1 * G) },
+      { id: 's6', cliente_id: 'c7', servizio: 'Simulazione colloquio', stato: 'consegnato', scadenza: null, prezzo: 139, incassato: 139, aggiornamento: 'Report inviato via email.', creato_il: t(4 * G), aggiornato_il: t(10 * H) },
+      { id: 's7', cliente_id: 'c7', servizio: 'Cover letter', stato: 'da iniziare', scadenza: giorno(6, 0).slice(0, 10), prezzo: 69, incassato: 0, aggiornamento: '', creato_il: t(10 * H), aggiornato_il: t(10 * H) }
     ],
     documenti: [
       { id: 'd1', cliente_id: 'c1', nome: 'CV_Anna_Rossi_2026.pdf', dimensione: 184320, tipo: 'application/pdf', categoria: 'cv', da_naomi: false, creato_il: t(20 * G) },
@@ -134,6 +150,7 @@
   var NF = {
     live: LIVE, pagina: pagina, esc: esc, peso: peso, quando: quando, iniziali: iniziali, waLink: waLink, controllaFile: controllaFile,
     fmtData: fmtData, fmtDataOra: fmtDataOra, CATEGORIE: CATEGORIE, STATI: STATI, TAPPE: TAPPE, FASI: FASI, SERVIZI: SERVIZI, NAOMI: NAOMI,
+    STATI_SERVIZIO: STATI_SERVIZIO, FONTI: FONTI, pagamento: pagamento, euro: euro, gestionaleMancante: false,
 
     // ----- accesso -----
     sessione: async function () {
@@ -273,8 +290,11 @@
         return demo.profili.map(function (p) {
           var docs = demo.documenti.filter(function (d) { return d.cliente_id === p.id; });
           var com = demo.commenti.filter(function (c) { return c.cliente_id === p.id; });
-          var date = [p.aggiornato_il].concat(docs.map(function (d) { return d.creato_il; }), com.map(function (c) { return c.creato_il; })).sort();
-          return Object.assign(clone(p), { n_documenti: docs.length, n_da_leggere: com.filter(function (c) { return !c.da_naomi && !c.letto; }).length, ultima_attivita: date[date.length - 1] });
+          var sv = demo.servizi.filter(function (s) { return s.cliente_id === p.id; }), aperti = sv.filter(function (s) { return ['consegnato', 'chiuso'].indexOf(s.stato) < 0; });
+          var date = [p.aggiornato_il].concat(docs.map(function (d) { return d.creato_il; }), com.map(function (c) { return c.creato_il; }), sv.map(function (s) { return s.aggiornato_il; })).sort();
+          var scad = aperti.map(function (s) { return s.scadenza; }).filter(Boolean).sort()[0] || null;
+          return Object.assign({ esterno: false, fonte: null }, clone(p), { n_documenti: docs.length, n_da_leggere: com.filter(function (c) { return !c.da_naomi && !c.letto; }).length, n_servizi_aperti: aperti.length,
+            da_incassare: sv.reduce(function (t, s) { return t + Math.max((+s.prezzo || 0) - (+s.incassato || 0), 0); }, 0), prossima_scadenza: scad, ultima_attivita: date[date.length - 1] });
         });
       }
       var r = await sb.from('clienti_panoramica').select('*').order('ultima_attivita', { ascending: false }); return r.data || [];
@@ -282,6 +302,43 @@
     cliente: async function (id) {
       if (!LIVE) return clone(demo.profili.find(function (p) { return p.id === id; }));
       var r = await sb.from('profiles').select('*').eq('id', id).maybeSingle(); return r.data;
+    },
+    // clienti fuori piattaforma: Naomi li crea a mano, senza account
+    nuovoCliente: async function (campi) {
+      var dati = { nome: String(campi.nome || '').trim(), email: String(campi.email || '').trim().toLowerCase() || null, telefono: String(campi.telefono || '').trim() || null,
+        fonte: campi.fonte || null, servizio: campi.servizio || null, obiettivo: String(campi.obiettivo || '').trim() || null, stato: 'attivo', esterno: true };
+      if (!dati.nome) return { errore: 'Scrivi almeno il nome.' };
+      if (dati.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dati.email)) return { errore: 'Questa email non sembra valida.' };
+      if (!LIVE) { var id = 'e' + uid(); demo.profili.push(Object.assign({ id: id, avatar_url: '', fase: null, passo: 0, creato_il: new Date().toISOString(), aggiornato_il: new Date().toISOString() }, dati)); demoAvvisa(); return { ok: true, id: id }; }
+      var r = await sb.from('profiles').insert(dati).select('id').single();
+      if (r.error) return { errore: /esterno|column/i.test(r.error.message) ? 'Prima va attivato il gestionale nel database (file supabase/gestionale.sql).' : r.error.message };
+      return { ok: true, id: r.data.id };
+    },
+    eliminaCliente: async function (id) {
+      if (!LIVE) { demo.profili = demo.profili.filter(function (p) { return p.id !== id; }); ['documenti', 'commenti', 'appuntamenti', 'note', 'servizi'].forEach(function (k) { demo[k] = demo[k].filter(function (x) { return x.cliente_id !== id; }); }); demoAvvisa(); return { ok: true }; }
+      var docs = await NF.documenti(id);
+      if (docs.length) await sb.storage.from('documenti').remove(docs.map(function (d) { return d.percorso; }));
+      var r = await sb.from('profiles').delete().eq('id', id).eq('esterno', true); return r.error ? { errore: r.error.message } : { ok: true };
+    },
+    // servizi del cliente, ognuno con stato, scadenza e pagamenti
+    servizi: async function (clienteId) {
+      if (!LIVE) return clone(demo.servizi.filter(function (s) { return s.cliente_id === clienteId; })).sort(function (a, b) { return a.creato_il.localeCompare(b.creato_il); });
+      var r = await sb.from('servizi_cliente').select('*').eq('cliente_id', clienteId).order('creato_il');
+      if (r.error) { NF.gestionaleMancante = true; return []; }
+      return r.data || [];
+    },
+    aggiungiServizio: async function (s) {
+      if (!s.servizio) return { errore: 'Scegli il servizio.' };
+      if (!LIVE) { demo.servizi.push(Object.assign({ id: uid(), stato: 'da iniziare', scadenza: null, prezzo: null, incassato: 0, aggiornamento: '', creato_il: new Date().toISOString(), aggiornato_il: new Date().toISOString() }, s)); demoAvvisa(); return { ok: true }; }
+      var r = await sb.from('servizi_cliente').insert(s); return r.error ? { errore: r.error.message } : { ok: true };
+    },
+    aggiornaServizio: async function (id, campi) {
+      if (!LIVE) { Object.assign(demo.servizi.find(function (s) { return s.id === id; }), campi, { aggiornato_il: new Date().toISOString() }); demoAvvisa(); return { ok: true }; }
+      var r = await sb.from('servizi_cliente').update(campi).eq('id', id); return r.error ? { errore: r.error.message } : { ok: true };
+    },
+    eliminaServizio: async function (id) {
+      if (!LIVE) { demo.servizi = demo.servizi.filter(function (s) { return s.id !== id; }); demoAvvisa(); return { ok: true }; }
+      var r = await sb.from('servizi_cliente').delete().eq('id', id); return r.error ? { errore: r.error.message } : { ok: true };
     },
     note: async function (clienteId) {
       if (!LIVE) return clone(demo.note.filter(function (n) { return n.cliente_id === clienteId; })).reverse();
@@ -312,6 +369,7 @@
       var ch = sb.channel('nf-' + (clienteId || 'tutti') + '-' + Math.random().toString(36).slice(2))
         .on('postgres_changes', { event: '*', schema: 'public', table: 'commenti', filter: filtro }, function () { cb(); })
         .on('postgres_changes', { event: '*', schema: 'public', table: 'documenti', filter: filtro }, function () { cb(); })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'servizi_cliente', filter: filtro }, function () { cb(); })
         .subscribe();
       return function () { sb.removeChannel(ch); };
     },

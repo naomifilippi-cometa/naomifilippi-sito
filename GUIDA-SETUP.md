@@ -164,3 +164,15 @@ Da questo momento la scritta "Modalità demo" sparisce, il modulo contatti e l'a
 - Per dare accesso alla dashboard a un'altra persona, aggiungi la sua email alla tabella `admins` (SQL Editor): `insert into public.admins (email) values ('email@esempio.it');`
 - Per la manutenzione tecnica, Naomi può invitare Sofiane nel progetto Supabase (**Organization → Team**) senza cedere la proprietà.
 - Prima di pubblicare, completa nelle pagine legali: Partita IVA, indirizzo, email, regime fiscale, fornitori effettivi (le parti evidenziate in rosa) e falle rileggere a un professionista.
+
+
+## Gestionale di Naomi: clienti fuori piattaforma e stato dei servizi
+
+Da eseguire **una volta**, dopo `setup.sql`: in Supabase apri **SQL Editor → New query**, incolla tutto il file `supabase/gestionale.sql` e premi **Run**. Si può rieseguire senza danni.
+
+Cosa aggiunge alla dashboard:
+- **Nuovo cliente**: Naomi può aggiungere chi segue fuori dal sito (senza account), con email, telefono e provenienza.
+- **Servizi**: per ogni cliente, uno o più servizi con stato (da iniziare, in corso, in revisione, consegnato, chiuso), consegna prevista, prezzo, incassato e un aggiornamento.
+- In alto: servizi in corso e importo ancora da incassare.
+- Le clienti registrate vedono i propri servizi e gli aggiornamenti nell'area clienti.
+- Se un cliente esterno si registra con la stessa email (verificata), la sua scheda si collega da sola all'account.
